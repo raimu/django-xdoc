@@ -1,5 +1,6 @@
 # Create your views here.
 import json
+from bson import ObjectId
 from django.http import HttpResponse
 from django.shortcuts import render
 from xdoc.documents import FolderNode
@@ -10,7 +11,10 @@ def index(request):
 
 
 def folder(request):
-    parent = None
+    if request.GET['root'] == 'source':
+        parent = None
+    else:
+        parent = ObjectId(request.GET['root'])
     tree = []
     for node in FolderNode.objects(parent=parent):
         current = {
