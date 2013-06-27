@@ -3,15 +3,26 @@
 <head>
     <meta charset="utf-8"/>
     <title>{% block html_title %}xdoc{% endblock %}</title>
-    <script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.1.min.js"></script>
-    <script src="{{ STATIC_URL }}xdoc/lib/jquery.cookie.js"></script>
-    <script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/bootstrap/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.css" />
     {% block html_head %}{% endblock %}
 </head>
 <body>
 {% block header %}{% endblock %}
 {% block content %}{% endblock %}
 {% block footer %}{% endblock %}
+
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.1.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.cookie.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/ui/jquery-ui.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.edit.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.async.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.ui.position.js"></script>
+{% block javacscipt %}{% endblock %}
 </body>
 </html>
