@@ -3,7 +3,7 @@ import json
 from bson import ObjectId
 from django.http import HttpResponse
 from django.shortcuts import render
-from xdoc.documents import Node, FolderNode
+from xdoc.documents import Node
 
 
 def index(request):
@@ -16,15 +16,16 @@ def tree(request):
     else:
         parent = ObjectId(request.GET['root'])
     tree = []
-    for node in FolderNode.objects(parent=parent):
+    for node in Node.objects(parent=parent):
+        children = Node.objects(path__startswith=node.path).count() -1
         current = {
-            'text': node.name,
+            'text': '%s (%s)' %(node.name, children),
             'expanded': False,
             'id': str(node.id),
             'hasChildren': False,
             'classes': 'folder',
         }
-        if len(FolderNode.objects(parent=node.id)) >= 1:  #  has children?
+        if children >= 1:  #  has children?
             current['hasChildren'] = True
         tree.append(current)
     return HttpResponse(json.dumps(tree))
