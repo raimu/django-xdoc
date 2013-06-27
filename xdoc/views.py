@@ -32,27 +32,26 @@ def tree(request):
 
 def table(request):
     columns = ['id', 'name', 'date_modified']
-    result = Node.objects
+    order_column = columns[int(request.GET['iSortCol_0'])]
+    start = int(request.GET['iDisplayStart'])
+    end = int(request.GET['iDisplayLength']) + start
+
+    result = Node.objects.all()
+
     if request.GET['sSearch'] != '':
         result = result.filter(name__icontains=request.GET['sSearch'])
     if request.GET['sSortDir_0'] == 'asc':
-        if request.GET['iSortCol_0'] == '0':
-            result = result.order_by('+id')
-        if request.GET['iSortCol_0'] == '1':
-            result = result.order_by('+name')
+        result = result.order_by('+%s' % order_column)
     if request.GET['sSortDir_0'] == 'desc':
-        if request.GET['iSortCol_0'] == '0':
-            result = result.order_by('-id')
-        if request.GET['iSortCol_0'] == '1':
-            result = result.order_by('-name')
-    data = {
+        result = result.order_by('-%s' % order_column)
+
+    data = []
+    for node in result[start:end]:
+        data.append([unicode(node[i]) for i in columns])
+
+    return HttpResponse(json.dumps({
         'sEcho': request.GET['sEcho'],
         'iTotalRecords': Node.objects.count(),
         'iTotalDisplayRecords': result.count(),
-        'aaData': [],
-        }
-    start = int(request.GET['iDisplayStart'])
-    end = int(request.GET['iDisplayLength']) + start
-    for node in result[start:end]:
-        data['aaData'].append([unicode(node[i]) for i in columns])
-    return HttpResponse(json.dumps(data))
+        'aaData': data,
+        }))
