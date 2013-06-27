@@ -6,7 +6,4 @@ setup(
     packages=['xdoc'],
     url='https://github.com/raimu/django-xdoc',
     license='GPL 3',
-    author='raimu',
-    author_email='ortwang@googlemail.com',
-    description='document-management-system'
 )
