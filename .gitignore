@@ -1,3 +1,4 @@
 *.pyc
 test_project/database.sqlite3
 env/
+build/

@@ -4,5 +4,6 @@ from xdoc import views
 
 urlpatterns = patterns('',
     url(r'^$', views.index, name='index'),
-    url(r'^/folder.json$', views.folder, name='folder'),
+    url(r'^/folder.json$', views.tree, name='tree'),
+    url(r'^/table.json$', views.table, name='table'),
 )
