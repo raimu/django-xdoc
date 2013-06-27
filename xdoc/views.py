@@ -45,9 +45,8 @@ def table(request):
     if request.GET['sSortDir_0'] == 'desc':
         result = result.order_by('-%s' % order_column)
 
-    data = []
-    for node in result[start:end]:
-        data.append([unicode(node[i]) for i in columns])
+    # convert result-object in a list
+    data = [[unicode(node[i]) for i in columns] for node in result[start:end]]
 
     return HttpResponse(json.dumps({
         'sEcho': request.GET['sEcho'],
