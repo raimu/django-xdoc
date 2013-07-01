@@ -6,10 +6,11 @@ mongoengine.connect('xdoc')
 
 
 class Node(mongoengine.Document):
+
     name = mongoengine.StringField(required=False)
     path = mongoengine.StringField()
     date_modified = mongoengine.DateTimeField(default=datetime.datetime.now)
-    parent = mongoengine.ReferenceField('self')
+    parent = mongoengine.ReferenceField('Node')
 
     meta = {'allow_inheritance': True}
 
@@ -23,9 +24,21 @@ class Node(mongoengine.Document):
             return [unicode(self.id)]
         return self.parent._get_path() + [unicode(self.id)]
 
+    def __unicode__(self):
+        return unicode(self.name)
+
 
 class FolderNode(Node):
     pass
+
+
+class Document(Node):
+    pass
+
+
+class TextDocument(Document):
+
+    content = mongoengine.StringField()
 
 
 signals.pre_save.connect(Node.pre_save)

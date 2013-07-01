@@ -1,9 +1,11 @@
 # Create your views here.
 import json
 from bson import ObjectId
-from django.http import HttpResponse
+from django.core.urlresolvers import reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from xdoc.documents import Node
+from xdoc.documents import Node, TextDocument
+from xdoc.forms import TextForm
 
 
 def index(request):
@@ -55,3 +57,22 @@ def table(request):
         'iTotalDisplayRecords': result.count(),
         'aaData': data,
         }))
+
+
+def edit(request, pk='None'):
+    instance = TextDocument()
+    if pk != 'None':
+        instance = TextDocument.objects.get(id=ObjectId(pk))
+    if request.method == 'POST':
+        form = TextForm(request.POST, instance=instance)
+        if form.is_valid():
+            instance = form.instance
+            instance.save().save()  # todo: build path after save
+            return HttpResponseRedirect(reverse('edit', args=[instance.pk]))
+    else:
+        form = TextForm(instance=instance)
+
+    return render(request, 'xdoc/edit.html', {
+        'form': form,
+        'pk': instance.pk
+    })
