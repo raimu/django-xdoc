@@ -1,3 +1,4 @@
 django
 mongoengine
 blinker
+mongodbforms
