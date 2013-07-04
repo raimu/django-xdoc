@@ -1,11 +1,11 @@
 # Create your views here.
 import json
 from bson import ObjectId
+from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from xdoc.documents import Node, TextDocument
-from xdoc.forms import TextForm
+from xdoc.documents import Node
 
 
 def index(request):
@@ -59,20 +59,31 @@ def table(request):
         }))
 
 
-def edit(request, pk='None'):
-    instance = TextDocument()
-    if pk != 'None':
-        instance = TextDocument.objects.get(id=ObjectId(pk))
+def edit(request, pk=None, node_class=None):
+    mapping = settings.XDOC_DOCUMENT_MAPPING
+    if pk is None or pk == 'None':
+        if node_class is None:
+            return render(request, 'xdoc/edit_choose_node.html', {
+                'mapping': [[i, mapping[i]['label']] for i in mapping],
+            })
+        instance = mapping[node_class]['node']()
+        form_obj = mapping[node_class]['form']
+        url = reverse('edit', args=[instance.pk, node_class])
+    else:
+        instance = Node.objects.get(id=ObjectId(pk))
+        form_obj = mapping[instance._cls]['form']
+        url = reverse('edit', args=[instance.pk])
+
     if request.method == 'POST':
-        form = TextForm(request.POST, instance=instance)
+        form = form_obj(request.POST, instance=instance)
         if form.is_valid():
             instance = form.instance
             instance.save().save()  # todo: build path after save
             return HttpResponseRedirect(reverse('edit', args=[instance.pk]))
     else:
-        form = TextForm(instance=instance)
+        form = form_obj(instance=instance)
 
     return render(request, 'xdoc/edit.html', {
         'form': form,
-        'pk': instance.pk
+        'url': url,
     })

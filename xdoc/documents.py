@@ -2,8 +2,6 @@ import datetime
 import mongoengine
 from mongoengine import signals
 
-mongoengine.connect('xdoc')
-
 
 class Node(mongoengine.Document):
 

@@ -7,5 +7,6 @@ urlpatterns = patterns('',
     url(r'^folder.json$', views.tree, name='tree'),
     url(r'^table.json$', views.table, name='table'),
     url(r'^edit/$', views.edit, name='edit'),
-    url(r'^edit/(?P<pk>.+)$', views.edit, name='edit'),
+    url(r'^edit/(?P<pk>[\w\d]+)/$', views.edit, name='edit'),
+    url(r'^edit/(?P<pk>[\w\d]+)/(?P<node_class>.+)/$', views.edit, name='edit'),
 )

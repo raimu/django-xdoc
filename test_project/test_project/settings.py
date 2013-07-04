@@ -158,3 +158,22 @@ LOGGING = {
         },
     }
 }
+
+import mongoengine
+mongoengine.connect('xdoc')
+
+from xdoc.documents import FolderNode, TextDocument
+from xdoc.forms import FolderForm, TextForm
+
+XDOC_DOCUMENT_MAPPING = {
+    'Node.Document.TextDocument': {
+        'node': TextDocument,
+        'form': TextForm,
+        'label': 'Text',
+    },
+    'Node.FolderNode': {
+        'node': FolderNode,
+        'form': FolderForm,
+        'label': 'Folder',
+    },
+}
