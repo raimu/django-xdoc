@@ -7,7 +7,7 @@ class TextForm(DocumentForm):
 
     class Meta:
         document = TextDocument
-        fields = ('name', 'content', 'parent')
+        fields = ('name', 'content', )
 
         widgets = {
             'name': widgets.TextInput(),
@@ -19,7 +19,7 @@ class FolderForm(DocumentForm):
 
     class Meta:
         document = FolderNode
-        fields = ('name', 'parent')
+        fields = ('name', )
 
         widgets = {
             'name': widgets.TextInput(),

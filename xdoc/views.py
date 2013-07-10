@@ -49,7 +49,12 @@ def table(request):
         result = result.order_by('-%s' % order_column)
 
     # convert result-object in a list
-    data = [[unicode(node[i]) for i in columns] for node in result[start:end]]
+    html = u'<a class="btn iframe" href="%s"><i class="icon-%s"></i></a>'
+    data = []
+    for node in result[start:end]:
+        rows = [unicode(node[col]) for col in columns]
+        rows.append(html % (reverse('edit', args=[unicode(node.pk)]), u'edit'))
+        data.append(rows)
 
     return HttpResponse(json.dumps({
         'sEcho': request.GET['sEcho'],
