@@ -5,7 +5,7 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
-from xdoc.documents import Node
+from xdoc.documents import Node, FolderNode
 
 
 def index(request):
@@ -18,7 +18,7 @@ def tree(request):
     else:
         parent = ObjectId(request.GET['root'])
     tree = []
-    for node in Node.objects(parent=parent):
+    for node in FolderNode.objects(parent=parent):
         children = Node.objects(path__startswith=node.path).count() -1
         current = {
             'text': '%s (%s)' %(node.name, children),
