@@ -10,7 +10,7 @@ class TextForm(DocumentForm):
         fields = ('name', 'content', )
 
         widgets = {
-            'name': widgets.TextInput(),
+            'name': widgets.TextInput({'class': 'input-xxlarge'}),
             'content': widgets.Textarea({'class': 'ckeditor'}),
         }
 
@@ -22,5 +22,5 @@ class FolderForm(DocumentForm):
         fields = ('name', )
 
         widgets = {
-            'name': widgets.TextInput(),
+            'name': widgets.TextInput({'class': 'input-xxlarge'}),
         }

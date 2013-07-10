@@ -49,7 +49,8 @@ def table(request):
         result = result.order_by('-%s' % order_column)
 
     # convert result-object in a list
-    html = u'<a class="btn iframe" href="%s"><i class="icon-%s"></i></a>'
+    html = u'''<a class="btn iframe fancybox.iframe" href="%s">
+    <i class="icon-%s"></i></a>'''
     data = []
     for node in result[start:end]:
         rows = [unicode(node[col]) for col in columns]

@@ -21,27 +21,29 @@
             }
         });
 
-        $('#table').dataTable( {
+        var table = $('#table').dataTable( {
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "{% url 'table' %}",
             "fnDrawCallback": function () {
-                $('.iframe').click(function(){
-                    open_iframe($(this).attr('href'));
-                    return false;
+                $(".iframe").fancybox({
+                    maxWidth: 1200,
+                    maxHeight: 800,
+                    fitToView: false,
+                    width: '70%',
+                    height: '70%',
+                    autoSize: true,
+                    closeClick: false,
+                    closeBtn: true,
+                    openEffect: 'elastic',
+                    closeEffect: 'elastic',
+                    afterClose: function(){
+                        table.fnDraw(false);
+                    }
                 });
             }
         });
     });
-
-    function open_iframe(url) {
-        var html = '<iframe width="99%" height="90%" frameborder="0" allowtransparency="true" src="' + url + '"></iframe>';
-        var modal = $('#myModal');
-        modal.find('iframe').remove();
-        modal.find('.modal-body').html(html);
-        modal.on('show');
-        modal.modal({show:true})
-    }
 </script>
 {% endblock %}
 
