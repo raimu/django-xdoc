@@ -5,6 +5,9 @@ from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
+from pygments import highlight
+from pygments.formatters.html import HtmlFormatter
+from pygments.lexers.web import JsonLexer
 from xdoc.documents import Node, FolderNode
 
 
@@ -54,7 +57,9 @@ def table(request):
     data = []
     for node in result[start:end]:
         rows = [unicode(node[col]) for col in columns]
-        rows.append(html % (reverse('edit', args=[unicode(node.pk)]), u'edit'))
+        links = html % (reverse('edit', args=[unicode(node.pk)]), u'edit')
+        links += html % (reverse('show', args=[unicode(node.pk)]), u'eye-open')
+        rows.append(links)
         data.append(rows)
 
     return HttpResponse(json.dumps({
@@ -92,4 +97,12 @@ def edit(request, pk=None, node_class=None):
     return render(request, 'xdoc/edit.html', {
         'form': form,
         'url': url,
+    })
+
+
+def show(request, pk):
+    data = json.loads(Node.objects.get(id=ObjectId(pk)).to_json())
+    code = json.dumps(data, indent=4)
+    return render(request, 'xdoc/show.html', {
+        'data': highlight(code, JsonLexer(), HtmlFormatter()),
     })

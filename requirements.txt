@@ -2,3 +2,4 @@ django
 mongoengine
 blinker
 mongodbforms
+pygments
