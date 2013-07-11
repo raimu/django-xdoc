@@ -10,7 +10,10 @@ class Node(mongoengine.Document):
     date_modified = mongoengine.DateTimeField(default=datetime.datetime.now)
     parent = mongoengine.ReferenceField('Node')
 
-    meta = {'allow_inheritance': True}
+    meta = {
+        'allow_inheritance': True,
+        'indexes': ['name', 'path']
+    }
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
