@@ -1,7 +1,26 @@
 {% extends 'xdoc/base.html' %}
 
+{% block css_area %}
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/css/jquery.dataTables.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/fancyapps-fancyBox/source/jquery.fancybox.css" />
+{% endblock %}
 
-{% block javacscipt %}
+
+{% block javacscipt_area %}
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.cookie.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.edit.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.async.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.ui.position.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/fancyapps-fancyBox/source/jquery.fancybox.pack.js"></script>
+
 <script type="text/javascript">
     $(document).ready(function(){
         $("#tree").treeview({
@@ -49,7 +68,7 @@
 
 {% block content %}
 
-<a href="https://github.com/raimu/django-xdoc"><img style="position: absolute; top: 0; right: 0; border: 0; width: 120px; z-index: 999;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
+    <a href="https://github.com/raimu/django-xdoc"><img style="position: absolute; top: 0; right: 0; border: 0; width: 120px; z-index: 999;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_gray_6d6d6d.png" alt="Fork me on GitHub"></a>
 
     <div class="navbar navbar-inverse">
       <div class="navbar-inner">

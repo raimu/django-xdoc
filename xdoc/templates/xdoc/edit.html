@@ -1,5 +1,9 @@
 {% extends 'xdoc/base.html' %}
 
+{% block javacscipt_area %}
+<script src="{{ STATIC_URL }}xdoc/lib/ckeditor/ckeditor.js"></script>
+{% endblock %}
+
 {% block content %}
 <div class="container">
     <form action="{{ url }}" method="post">{% csrf_token %}
