@@ -21,29 +21,33 @@
             }
         });
 
-        var table = $('#table').dataTable( {
+        init_modal();
+
+        table = $('#table').dataTable( {
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "{% url 'table' %}",
-            "fnDrawCallback": function () {
-                $(".iframe").fancybox({
-                    maxWidth: 1200,
-                    maxHeight: 800,
-                    fitToView: false,
-                    width: '70%',
-                    height: '70%',
-                    autoSize: true,
-                    closeClick: false,
-                    closeBtn: true,
-                    openEffect: 'elastic',
-                    closeEffect: 'elastic',
-                    afterClose: function(){
-                        table.fnDraw(false);
-                    }
-                });
-            }
+            "fnDrawCallback": init_modal
         });
     });
+
+    function init_modal() {
+        $(".iframe").fancybox({
+            maxWidth: 1200,
+            maxHeight: 800,
+            fitToView: false,
+            width: '70%',
+            height: '70%',
+            autoSize: true,
+            closeClick: false,
+            closeBtn: true,
+            openEffect: 'elastic',
+            closeEffect: 'elastic',
+            afterClose: function(){
+                table.fnDraw(false);
+            }
+        });
+    }
 </script>
 {% endblock %}
 
@@ -68,6 +72,11 @@
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
+              <li>
+                  <a href="{% url 'edit' %}" class="iframe fancybox.iframe">
+                      <i class="icon-plus icon-white"></i>
+                  </a>
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
