@@ -162,8 +162,8 @@ LOGGING = {
 import mongoengine
 mongoengine.connect('xdoc')
 
-from xdoc.documents import FolderNode, TextDocument
-from xdoc.forms import FolderForm, TextForm
+from xdoc.documents import FolderNode, TextDocument, Link
+from xdoc.forms import FolderForm, TextForm, LinkForm
 
 XDOC_DOCUMENT_MAPPING = {
     'Node.Document.TextDocument': {
@@ -176,4 +176,9 @@ XDOC_DOCUMENT_MAPPING = {
         'form': FolderForm,
         'label': 'Folder',
     },
+    'Node.Document.Link': {
+        'node': Link,
+        'form': LinkForm,
+        'label': 'external Link',
+    }
 }

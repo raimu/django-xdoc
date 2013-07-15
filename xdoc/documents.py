@@ -42,4 +42,9 @@ class TextDocument(Document):
     content = mongoengine.StringField()
 
 
+class Link(Document):
+
+    url = mongoengine.URLField()
+
+
 signals.pre_save.connect(Node.pre_save)
