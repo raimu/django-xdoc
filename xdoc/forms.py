@@ -1,4 +1,4 @@
-from documents import TextDocument, FolderNode, Link
+from documents import Folder, Text, Link
 from mongodbforms import DocumentForm
 from django.forms import widgets
 
@@ -6,7 +6,7 @@ from django.forms import widgets
 class TextForm(DocumentForm):
 
     class Meta:
-        document = TextDocument
+        document = Text
         fields = ('name', 'content', )
 
         widgets = {
@@ -18,7 +18,7 @@ class TextForm(DocumentForm):
 class FolderForm(DocumentForm):
 
     class Meta:
-        document = FolderNode
+        document = Folder
         fields = ('name', )
 
         widgets = {
