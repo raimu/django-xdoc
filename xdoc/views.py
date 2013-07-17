@@ -52,12 +52,16 @@ def table(request):
         result = result.order_by('-%s' % order_column)
 
     # convert result-object in a list
-    html = u'''<a class="btn iframe" href="%s"><i class="icon-%s"></i></a>'''
+    tmpl = u'''<a class="btn iframe" href="%s"><i class="icon-%s"></i></a>'''
     data = []
     for node in result[start:end]:
         rows = [unicode(node[col]) for col in columns]
-        links = html % (reverse('edit', args=[unicode(node.pk)]), u'edit')
-        links += html % (reverse('show', args=[unicode(node.pk)]), u'eye-open')
+        links = tmpl % (reverse('edit', args=[unicode(node.pk)]), u'edit')
+        links += tmpl % (reverse('show', args=[unicode(node.pk)]), u'leaf')
+        if hasattr(node, 'url'):
+            links += tmpl % (node.url, u'road')
+            links += u'''<a class="btn" target="_blank" href="%s">
+            <i class="icon-%s"></i></a>''' % (node.url, u'globe')
         rows.append(links)
         data.append(rows)
 
