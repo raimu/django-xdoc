@@ -5,7 +5,12 @@
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.css" />
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/css/jquery.dataTables.css" />
-<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/fancyapps-fancyBox/source/jquery.fancybox.css" />
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/colorbox/example3/colorbox.css" />
+<style>
+#cboxLoadedContent{
+    padding: 10px 5px;
+}
+</style>
 {% endblock %}
 
 
@@ -19,7 +24,7 @@
 <script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.ui.position.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/fancyapps-fancyBox/source/jquery.fancybox.pack.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/colorbox/jquery.colorbox-min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
@@ -45,18 +50,12 @@
             "bServerSide": true,
             "sAjaxSource": "{% url 'table' %}",
             "fnDrawCallback": function () {
-                $(".iframe").fancybox({
-                    maxWidth: 1200,
-                    maxHeight: 800,
-                    fitToView: false,
-                    width: '70%',
-                    height: '70%',
-                    autoSize: true,
-                    closeClick: false,
-                    closeBtn: true,
-                    openEffect: 'elastic',
-                    closeEffect: 'elastic',
-                    afterClose: function(){
+                $('.iframe').colorbox({
+                    transition: 'elastic',
+                    iframe:true,
+                    width:"80%",
+                    height:"80%",
+                    onClosed: function(){
                         table.fnDraw(false);
                     }
                 });
