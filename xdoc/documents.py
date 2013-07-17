@@ -6,19 +6,20 @@ from mongoengine import signals
 class Node(mongoengine.Document):
 
     name = mongoengine.StringField(required=False)
-    path = mongoengine.StringField()
     date_modified = mongoengine.DateTimeField(default=datetime.datetime.now)
     parent = mongoengine.ReferenceField('Node')
 
+    _id_path = mongoengine.StringField()
+
     meta = {
         'allow_inheritance': True,
-        'indexes': ['name', 'path']
+        'indexes': ['name', '_id_path']
     }
 
     @classmethod
     def pre_save(cls, sender, document, **kwargs):
         if isinstance(document, Node):
-            document.path = '/' + '/'.join(document._get_path())
+            document._id_path = '/' + '/'.join(document._get_path())
 
     def _get_path(self):
         if self.parent == None:
@@ -29,7 +30,7 @@ class Node(mongoengine.Document):
         return unicode(self.name)
 
 
-class FolderNode(Node):
+class Folder(Node):
     pass
 
 
@@ -37,9 +38,14 @@ class Document(Node):
     pass
 
 
-class TextDocument(Document):
+class Text(Document):
 
     content = mongoengine.StringField()
+
+
+class Link(Document):
+
+    url = mongoengine.URLField()
 
 
 signals.pre_save.connect(Node.pre_save)

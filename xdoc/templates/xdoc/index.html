@@ -45,23 +45,27 @@
             }
         });
 
-        var table = $('#table').dataTable( {
+        init_modal();
+
+        table = $('#table').dataTable( {
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "{% url 'table' %}",
-            "fnDrawCallback": function () {
-                $('.iframe').colorbox({
-                    transition: 'elastic',
-                    iframe:true,
-                    width:"80%",
-                    height:"80%",
-                    onClosed: function(){
-                        table.fnDraw(false);
-                    }
-                });
-            }
+            "fnDrawCallback": init_modal
         });
     });
+
+    function init_modal() {
+        $('.iframe').colorbox({
+            transition: 'elastic',
+            iframe:true,
+            width:"80%",
+            height:"80%",
+            onClosed: function(){
+                table.fnDraw(false);
+            }
+        });
+    }
 </script>
 {% endblock %}
 
@@ -86,6 +90,11 @@
               <li class="active"><a href="#">Home</a></li>
               <li><a href="#about">About</a></li>
               <li><a href="#contact">Contact</a></li>
+              <li>
+                  <a href="{% url 'edit' %}" class="iframe fancybox.iframe">
+                      <i class="icon-plus icon-white"></i>
+                  </a>
+              </li>
             </ul>
           </div><!--/.nav-collapse -->
         </div>
