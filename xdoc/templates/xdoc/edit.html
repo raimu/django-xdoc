@@ -1,7 +1,7 @@
 {% extends 'xdoc/base.html' %}
 
 {% block javacscipt_area %}
-<script src="{{ STATIC_URL }}xdoc/lib/ckeditor/ckeditor.js"></script>
+{{ form.media }}
 {% endblock %}
 
 {% block content %}
@@ -11,7 +11,6 @@
         <div class="navbar navbar-fixed-bottom">
             <div class="navbar-inner">
                 <input type="submit" value="Save" class="btn btn-large btn-primary" />
-
             </div>
         </div>
     </form>

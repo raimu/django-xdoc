@@ -2,6 +2,8 @@ from documents import Folder, Text, Link
 from mongodbforms import DocumentForm
 from django.forms import widgets
 
+from xdoc.widgets import ckEditor
+
 
 class TextForm(DocumentForm):
 
@@ -11,7 +13,7 @@ class TextForm(DocumentForm):
 
         widgets = {
             'name': widgets.TextInput({'class': 'input-xxlarge'}),
-            'content': widgets.Textarea({'class': 'ckeditor'}),
+            'content': ckEditor(),
         }
 
 
@@ -30,7 +32,7 @@ class LinkForm(DocumentForm):
 
     class Meta:
         document = Link
-        fields = ('name', 'url')
+        fields = ('name', 'url', )
 
         widgets = {
             'name': widgets.TextInput({'class': 'input-xxlarge'}),
