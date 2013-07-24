@@ -25,7 +25,7 @@ def tree(request):
         children = Node.objects(_id_path__startswith=node._id_path).count() - 1
         current = {
             'attr': {'id': str(node.id), 'rel': 'folder'},
-            'data': str(node.name),
+            'data': unicode(node.name),
         }
         if children >= 1:  #  has children?
             current['state'] = 'closed'
