@@ -16,22 +16,19 @@ def index(request):
 
 
 def tree(request):
-    if request.GET['root'] == 'source':
+    if request.GET['id'] == '0':
         parent = None
     else:
-        parent = ObjectId(request.GET['root'])
+        parent = ObjectId(request.GET['id'])
     tree = []
     for node in Folder.objects(parent=parent):
         children = Node.objects(_id_path__startswith=node._id_path).count() - 1
         current = {
-            'text': '%s (%s)' %(node.name, children),
-            'expanded': False,
-            'id': str(node.id),
-            'hasChildren': False,
-            'classes': 'folder',
+            'attr': {'id': str(node.id), 'rel': 'folder'},
+            'data': str(node.name),
         }
         if children >= 1:  #  has children?
-            current['hasChildren'] = True
+            current['state'] = 'closed'
         tree.append(current)
     return HttpResponse(json.dumps(tree))
 

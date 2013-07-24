@@ -1,15 +1,12 @@
 {% extends 'xdoc/base.html' %}
 
 {% block css_area %}
-<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.css" />
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/themes/base/jquery-ui.css" />
-<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.css" />
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/css/jquery.dataTables.css" />
 <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/colorbox/example3/colorbox.css" />
 <style>
-#cboxLoadedContent{
-    padding: 10px 5px;
-}
+#cboxLoadedContent{ padding: 10px 5px; }
+#tree { font-size: 0.9em; overflow-x: auto; padding-bottom: 10px; }
 </style>
 {% endblock %}
 
@@ -18,31 +15,31 @@
 <script src="{{ STATIC_URL }}xdoc/lib/jquery.cookie.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.edit.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/jquery.treeview/jquery.treeview.async.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.contextMenu.js"></script>
-<script src="{{ STATIC_URL }}xdoc/lib/jQuery-contextMenu-master/src/jquery.ui.position.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jstree-v.pre1.0/jquery.jstree.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/colorbox/jquery.colorbox-min.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function(){
-        $("#tree").treeview({
-            url: "{% url 'tree' %}"
-        })
-
-        $('#tree').contextMenu({
-            selector: 'li',
-            callback: function(key, options) {
-                var m = "clicked: " + key + " on " + $(this).text();
-                window.console && console.log(m) || alert(m);
-                console.log($(this).attr('id'));
+        $("#tree").jstree({
+            "json_data" : {
+                "ajax" : {
+                    "url" : "{% url 'tree' %}",
+                    "data" : function (n) {
+                        return { id : n.attr ? n.attr("id") : 0 };
+                    }
+                }
             },
-            items: {
-                "edit": {name: "Edit", icon: "edit"},
-                "delete": {name: "Delete", icon: "delete"}
-            }
+            "core": {
+                "animation": 100
+            },
+            "themes" : {
+                "theme" : "apple"
+            },
+            "ui": {
+                'select_limit': 1
+            },
+            "plugins" : [ "themes", "json_data", 'ui','cookies', 'contextmenu' ]
         });
 
         init_modal();
@@ -105,8 +102,7 @@
       <div class="row-fluid">
         <div class="span3">
           <div class="well sidebar-nav">
-                <ul class="nav nav-list filetree" id="tree">
-                </ul>
+                <div id="tree"></div>
           </div><!--/.well -->
         </div><!--/span-->
         <div class="span9">
