@@ -16,6 +16,7 @@
 <script src="{{ STATIC_URL }}xdoc/lib/jquery-ui-1.10.3/ui/minified/jquery-ui.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/jstree-v.pre1.0/jquery.jstree.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/jeresig-jquery.hotkeys/jquery.hotkeys.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/DataTables-1.9.4/media/js/jquery.dataTables.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/colorbox/jquery.colorbox-min.js"></script>
 
@@ -39,7 +40,7 @@
             "ui": {
                 'select_limit': 1
             },
-            "plugins" : [ "themes", "json_data", 'ui','cookies', 'contextmenu' ]
+            "plugins" : [ "themes", "json_data", 'ui','cookies', 'contextmenu', 'hotkeys' ]
         });
 
         init_modal();
