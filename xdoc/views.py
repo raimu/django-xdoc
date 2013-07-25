@@ -24,7 +24,8 @@ def tree(request):
     for node in Folder.objects(parent=parent):
         children = Node.objects(_id_path__startswith=node._id_path).count() - 1
         current = {
-            'attr': {'id': str(node.id), 'rel': 'folder'},
+            'attr': {'id': str(node.id), 'rel': 'folder',
+                     'title': unicode(node.name)},
             'data': unicode(node.name),
         }
         if children >= 1:  #  has children?
@@ -94,10 +95,14 @@ def edit(request, pk=None, node_class=None):
     else:
         form = form_obj(instance=instance)
 
-    return render(request, 'xdoc/edit.html', {
-        'form': form,
-        'url': url,
-    })
+    c = {'form': form, 'url': url, }
+    if instance.pk:
+        if instance.parent:
+            c['selected_parent'] = instance.parent.pk
+        path = instance._id_path.split('/')
+        print path
+        c['initially_open'] = json.dumps(instance._id_path.split('/')[1:-2])
+    return render(request, 'xdoc/edit.html', c)
 
 
 def show(request, pk):

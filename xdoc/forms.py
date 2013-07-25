@@ -9,11 +9,12 @@ class TextForm(DocumentForm):
 
     class Meta:
         document = Text
-        fields = ('name', 'content', )
+        fields = ('name', 'content', 'parent', )
 
         widgets = {
             'name': widgets.TextInput({'class': 'input-xxlarge'}),
             'content': ckEditor(),
+            'parent': widgets.TextInput(),
         }
 
 
@@ -21,10 +22,11 @@ class FolderForm(DocumentForm):
 
     class Meta:
         document = Folder
-        fields = ('name', )
+        fields = ('name', 'parent', )
 
         widgets = {
             'name': widgets.TextInput({'class': 'input-xxlarge'}),
+            'parent': widgets.TextInput(),
         }
 
 
@@ -32,9 +34,10 @@ class LinkForm(DocumentForm):
 
     class Meta:
         document = Link
-        fields = ('name', 'url', )
+        fields = ('name', 'url', 'parent', )
 
         widgets = {
             'name': widgets.TextInput({'class': 'input-xxlarge'}),
             'url': widgets.TextInput({'class': 'input-xxlarge'}),
+            'parent': widgets.TextInput(),
         }
