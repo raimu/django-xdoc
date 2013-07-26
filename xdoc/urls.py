@@ -10,4 +10,5 @@ urlpatterns = patterns('',
     url(r'^edit/(?P<pk>[\w\d]+)/$', views.edit, name='edit'),
     url(r'^edit/(?P<pk>[\w\d]+)/(?P<node_class>.+)/$', views.edit, name='edit'),
     url(r'^show/(?P<pk>[\w\d]+)/$', views.show, name='show'),
+    url(r'logout$', views.xdoc_logout, name='logout'),
 )

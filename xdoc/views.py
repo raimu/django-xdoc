@@ -1,6 +1,8 @@
 import json
 from bson import ObjectId
 from django.conf import settings
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -10,10 +12,12 @@ from pygments.lexers.web import JsonLexer
 from xdoc.documents import Node, Folder
 
 
+@login_required
 def index(request):
     return render(request, 'xdoc/index.html')
 
 
+@login_required
 def tree(request):
     if request.GET['id'] == '0':
         parent = None
@@ -33,6 +37,7 @@ def tree(request):
     return HttpResponse(json.dumps(tree))
 
 
+@login_required
 def table(request):
     columns = ['id', 'name', 'date_modified']
     order_column = columns[int(request.GET['iSortCol_0'])]
@@ -70,6 +75,7 @@ def table(request):
         }))
 
 
+@login_required
 def edit(request, pk=None, node_class=None):
     mapping = settings.XDOC_DOCUMENT_MAPPING
     if pk is None or pk == 'None':
@@ -102,9 +108,15 @@ def edit(request, pk=None, node_class=None):
     return render(request, 'xdoc/edit.html', c)
 
 
+@login_required
 def show(request, pk):
     data = json.loads(Node.objects.get(id=ObjectId(pk)).to_json())
     code = json.dumps(data, indent=4)
     return render(request, 'xdoc/show.html', {
         'data': highlight(code, JsonLexer(), HtmlFormatter()),
     })
+
+
+def xdoc_logout(request):
+    logout(request)
+    return HttpResponseRedirect(reverse('index'))
