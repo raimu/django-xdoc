@@ -1,4 +1,3 @@
-# Create your views here.
 import json
 from bson import ObjectId
 from django.conf import settings
@@ -99,8 +98,6 @@ def edit(request, pk=None, node_class=None):
     if instance.pk:
         if instance.parent:
             c['selected_parent'] = instance.parent.pk
-        path = instance._id_path.split('/')
-        print path
         c['initially_open'] = json.dumps(instance._id_path.split('/')[1:-2])
     return render(request, 'xdoc/edit.html', c)
 
