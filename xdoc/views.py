@@ -9,6 +9,7 @@ from django.shortcuts import render
 from pygments import highlight
 from pygments.formatters.html import HtmlFormatter
 from pygments.lexers.web import JsonLexer
+import re
 from xdoc.documents import Node, Folder
 
 
@@ -47,7 +48,8 @@ def table(request):
     result = Node.objects.all()
 
     if request.GET['sSearch'] != '':
-        result = result.filter(name__icontains=request.GET['sSearch'])
+        result = result.filter(_keywords=re.compile(request.GET['sSearch'],
+                                                    re.IGNORECASE))
     if request.GET['sSortDir_0'] == 'asc':
         result = result.order_by('+%s' % order_column)
     if request.GET['sSortDir_0'] == 'desc':
