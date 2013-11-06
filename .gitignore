@@ -1,3 +1,4 @@
 *.pyc
+django-xdoc/db.sqlite3
 env/
 build/
