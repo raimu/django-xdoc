@@ -1,3 +1,12 @@
 from django.contrib import admin
+from xdoc.models import Node, Document
 
-# Register your models here.
+
+class NodeAdmin(admin.ModelAdmin):
+    list_display = ('name', 'path', 'created_at', 'updated_at')
+    list_filter = ['created_at', 'updated_at']
+    search_fields = ['name']
+
+
+admin.site.register(Node, NodeAdmin)
+admin.site.register(Document, NodeAdmin)

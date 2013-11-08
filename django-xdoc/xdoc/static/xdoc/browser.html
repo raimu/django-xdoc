@@ -20,7 +20,7 @@
             </thead>
             <tbody>
             <tr ng-repeat="node in nodes | filter:searchKeyword">
-                <td><img ng-src="{{node.thumbnail}}" height="40"/></td>
+                <td><img ng-src="{{node.thumbnail_url}}" height="40"/></td>
                 <td>{{ node.name }}</td>
                 <td>
                     <span ng-repeat="tag in node.tags">
