@@ -6,66 +6,31 @@ angular.module('browser', []).
             otherwise({redirectTo: '/'});
     });
 
-function ListCtrl($scope) {
-    $scope.folder = "/static/xdoc/lib/icons/places/folder.png";
-    $scope.text = "/static/xdoc/lib/icons/mimetypes/text-x-nfo.png";
-    $scope.xml = "/static/xdoc/lib/icons/mimetypes/text-xml.png";
-    $scope.nodes = [
-        {
-            id: 1,
-            name: "Foo",
-            thumbnail: $scope.folder
-        },
-        {
-            id: 2,
-            name: "HelloWorld.txt",
-            thumbnail: $scope.text
-        },
-        {
-            id: 3,
-            name: "Bar.txt",
-            thumbnail: $scope.text
-        },
-        {
-            id: 4,
-            name: "Baz.txt",
-            thumbnail: $scope.xml,
-            tags: ["foo", "bar", "baz"]
-        },
-        {
-            id: 5,
-            name: "HelloWorld.txt",
-            thumbnail: $scope.text
-        },
-        {
-            id: 6,
-            name: "Bar.txt",
-            thumbnail: $scope.text
-        },
-        {
-            id: 7,
-            name: "Baz.txt",
-            thumbnail: $scope.xml,
-            tags: ["Hello", "World"]
-        },
-        {
-            id: 8,
-            name: "HelloWorld.txt",
-            thumbnail: $scope.text
-        },
-        {
-            id: 9,
-            name: "Bar.txt",
-            thumbnail: $scope.text
-        }
-    ];
+
+function ListCtrl($scope, $http) {
+
+    $scope.load_data = function() {
+        $http.get('/xdoc/api/node/').success(function(data) {
+            $scope.count = data.count;
+            $scope.next = data.next;
+            $scope.previous = data.previous;
+            $scope.nodes = data.results;
+        });
+    };
+
+    $scope.load_data();
 }
 
 
-function EditCtrl($scope, $routeParams) {
+function EditCtrl($scope, $routeParams, $http) {
     $scope.nodeId = $routeParams.nodeId;
-    $scope.node = {
-        id: $scope.nodeId,
-        name: "Hello World"
+
+    $scope.load_data = function() {
+        var url = '/xdoc/api/node/' + $scope.nodeId;
+        $http.get(url).success(function(data) {
+            $scope.node = data;
+        });
     };
+
+    $scope.load_data();
 }
