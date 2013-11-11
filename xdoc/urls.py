@@ -6,7 +6,8 @@ router = routers.DefaultRouter()
 router.register(r'node', views.NodeViewSet)
 
 urlpatterns = patterns('xdoc.views',
-    url(r'^$', 'main'),
+    url(r'^$', 'main', name='main'),
+    url(r'^edit/(?P<pk>\d+)/', 'edit', name='edit'),
     url(r'^api/auth/', include('rest_framework.urls', namespace='rest_framework')),
     url(r'^api/', include(router.urls)),
 )

@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'xdoc',
     'rest_framework',
+    'bootstrapform',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -85,6 +86,6 @@ STATIC_URL = '/static/'
 
 # my config
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAdminUser',),
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'PAGINATE_BY': 10
 }

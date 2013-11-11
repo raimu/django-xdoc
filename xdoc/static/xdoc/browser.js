@@ -25,12 +25,21 @@ function ListCtrl($scope, $http) {
 function EditCtrl($scope, $routeParams, $http) {
     $scope.nodeId = $routeParams.nodeId;
 
-    $scope.load_data = function() {
-        var url = '/xdoc/api/node/' + $scope.nodeId;
-        $http.get(url).success(function(data) {
-            $scope.node = data;
-        });
+    $scope.insert_iframe = function() {
+        var element = $('<iframe src="/xdoc/edit/' + $scope.nodeId+'"' +
+            'style="width: 100%; border: none;" />');
+        $(element).load(function(){
+            var iframe = $('iframe')
+            iframe.height(iframe.contents().find('html').height());
+        }).appendTo('#iframeContent');
     };
 
-    $scope.load_data();
+    $scope.on_save = function() {
+        $('iframe').contents().find('form').submit()
+    };
+
+    $scope.init = function() {
+        $scope.insert_iframe();
+    };
+    $scope.init();
 }

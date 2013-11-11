@@ -1,0 +1,17 @@
+{% load bootstrap %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/bootstrap/css/bootstrap.min.css">
+</head>
+<body>
+
+{{ message }}
+
+
+<form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
+    {{ form|bootstrap }}
+</form>
+
+</body>
+</html>

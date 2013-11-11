@@ -9,7 +9,7 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^xdoc/', include('xdoc.urls')),
+    url(r'^xdoc/', include('xdoc.urls', namespace='xdoc')),
 
     (r'^accounts/login/$', 'django.contrib.auth.views.login', {
         'template_name': 'xdoc/login.html'}),
