@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     'xdoc',
     'rest_framework',
     'bootstrapform',
+    'testapp',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -88,4 +89,22 @@ STATIC_URL = '/static/'
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'PAGINATE_BY': 10
+}
+
+XDOC_NODE_MAP = {
+    'Node': {
+        'node': 'xdoc.models.Node',
+        'form': 'xdoc.models.NodeForm',
+        'thumbnail': '/static/xdoc/lib/icons/places/folder.png'
+    },
+    'Document': {
+        'node': 'xdoc.models.Document',
+        'form': 'xdoc.models.DocumentForm',
+        'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-plain.png'
+    },
+    'BusinessCard': {
+        'node': 'testapp.models.BusinessCard',
+        'form': 'testapp.models.BusinessCardForm',
+        'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-x-vcard.png'
+    },
 }

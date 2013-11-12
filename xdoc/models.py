@@ -1,5 +1,7 @@
+from django.conf import settings
 from django.db import models
 from django.forms import ModelForm
+from django.utils.importlib import import_module
 
 
 class Node(models.Model):
@@ -17,7 +19,7 @@ class Node(models.Model):
 
     @property
     def thumbnail_url(self):
-        return NODE_MAP[self.filetype]['thumbnail']
+        return self._get_settings('thumbnail')
 
     @property
     def filetype(self):
@@ -27,11 +29,17 @@ class Node(models.Model):
 
     @property
     def form(self):
-        form = NODE_MAP[self.filetype]['form']
-        return form
+        return import_class(self._get_settings('form'))
 
     def get_fileobject(self):
-        return NODE_MAP[self.filetype]['node'].objects.get(pk=self.pk)
+        return import_class(self._get_settings('node')).objects.get(pk=self.pk)
+
+    @staticmethod
+    def create_new_fileobject(name):
+        return import_class(settings.XDOC_NODE_MAP[name]['node'])()
+
+    def _get_settings(self, name):
+        return settings.XDOC_NODE_MAP[self.filetype][name]
 
     def save(self, *args, **kwargs):
         self._filetype = self.filetype
@@ -58,17 +66,7 @@ class DocumentForm(ModelForm):
         model = Document
 
 
-#TODO: Move to settings
-NODE_MAP = {
-    'Node': {
-        'node': Node,
-        'form': NodeForm,
-        'thumbnail': '/static/xdoc/lib/icons/places/folder.png'
-    },
-    'Document': {
-        'node': Document,
-        'form': DocumentForm,
-        'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-plain.png'
-
-    },
-}
+def import_class(name):
+    name = name.split('.')
+    module = import_module('.'.join(name[:-1]))
+    return getattr(module, name[-1])

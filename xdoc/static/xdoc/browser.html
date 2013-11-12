@@ -1,4 +1,12 @@
 <div class="container" ng-controller="ListCtrl">
+    <div class="well well-sm">
+        <span ng-repeat="n in config.node_map" class="list-unstyled">
+            <a class="btn btn-default btn-xs" ng-href="#/add/{{n}}">
+                <span class="glyphicon glyphicon-plus"></span>
+                {{n}}
+            </a>
+        </span>
+    </div>
     <div class="panel panel-default panel-primary">
         <div class="panel-heading">
             <ol class="breadcrumb" style="margin: 0;">
@@ -43,8 +51,8 @@
                             <a href="#/edit/{{node.id}}" class="btn btn-default">
                                 <span class="glyphicon glyphicon-edit"></span>
                             </a>
-                            <a class="btn btn-default">
-                                <span class="glyphicon glyphicon-globe"></span>
+                            <a href="#/detail/{{node.id}}" class="btn btn-default">
+                                <span class="glyphicon glyphicon-info-sign"></span>
                             </a>
                         </div>
                     </td>
