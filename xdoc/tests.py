@@ -45,7 +45,8 @@ class NodeMethodTests(TestCase):
         foo = Node(name='foo')
         bar = Node(name='bar', parent=foo)
         baz = Document(name='baz.txt', parent=bar)
-        self.assertEqual('foo/bar/baz.txt', '/'.join(baz.path))
+        self.assertEqual('foo/bar/baz.txt',
+                         '/'.join([i.name for i in baz.path]))
 
     def test_form(self):
         node = Node(name='foo')
@@ -133,4 +134,9 @@ class ViewTests(TestCase):
             'parent_node': self.node.pk})
         self.assertIn('bar', response.content)
 
-
+    def test_node_list_parent_path(self):
+        Document(name='bar.txt', parent=self.node).save()
+        response = self.client.get(reverse('xdoc:node_list'), {
+            'parent_node': self.node.pk})
+        data = json.loads(response.content)
+        self.assertEqual([['foo', self.node.id]], data['path'])

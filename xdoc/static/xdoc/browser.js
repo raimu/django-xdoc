@@ -33,10 +33,11 @@ function ListCtrl($scope, $http, $rootScope) {
         }};
         $http.get('/xdoc/api/node/', config).success(function(data) {
             $rootScope.parent_node = data.parent_node;
-            $scope.count = data.count;
             $rootScope.start = data.start;
-            $scope.paginate = data.paginate;
             $rootScope.q = data.q;
+            $scope.count = data.count;
+            $scope.paginate = data.paginate;
+            $scope.path = data.path;
             $scope.nodes = data.results;
         });
     };
@@ -66,6 +67,22 @@ function ListCtrl($scope, $http, $rootScope) {
 
     $scope.pageEnd = function() {
         return Math.min($scope.start + $scope.paginate, $scope.count)
+    };
+
+    $scope.selectPath = function(nodeId) {
+        $rootScope.parent_node = nodeId;
+        $scope.loadNode();
+    };
+
+    $scope.open = function(nodeIndex) {
+        var node = $scope.nodes[nodeIndex];
+        if (node.has_children) {
+            $rootScope.parent_node = node.id;
+            $scope.loadNode();
+        }
+        else {
+            location.href = "#/edit/" + node.id;
+        }
     };
 
     $scope.init = function() {

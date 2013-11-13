@@ -9,5 +9,4 @@ class NodeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Node
-        fields = ('name', 'thumbnail_url', 'path', 'id', 'parent',
-                  'has_children')
+        fields = ('name', 'thumbnail_url', 'id', 'parent', 'has_children')

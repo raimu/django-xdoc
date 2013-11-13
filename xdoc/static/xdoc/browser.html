@@ -37,9 +37,12 @@
         <div class="panel panel-default panel-primary">
             <div class="panel-heading">
                 <ol class="breadcrumb" style="margin: 0;">
-                    <li><a href="#">Home</a></li>
-                    <li><a href="#">Library</a></li>
-                    <li class="active">Data</li>
+                    <li><a ng-click="selectPath(null)" class="pointer">
+                        <span class="glyphicon glyphicon-home"></span>
+                    </a></li>
+                    <li ng-repeat="i in path">
+                        <a ng-click="selectPath(i.1)" class="pointer">{{i.0}}</a>
+                    </li>
                 </ol>
             </div>
             <div class="panel-body">
@@ -54,7 +57,7 @@
                     </thead>
                     <tbody>
                     <tr ng-repeat="node in nodes">
-                        <td><img ng-src="{{node.thumbnail_url}}" height="30"/></td>
+                        <td><img ng-click="open($index)" ng-src="{{node.thumbnail_url}}" height="30" class="pointer"/></td>
                         <td>{{ node.name }}</td>
                         <td>
                             <span ng-repeat="tag in node.tags">

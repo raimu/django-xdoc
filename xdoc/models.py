@@ -14,8 +14,8 @@ class Node(models.Model):
     @property
     def path(self):
         if self.parent is None:
-            return [self.name]
-        return self.parent.path + [self.name]
+            return [self]
+        return self.parent.path + [self]
 
     @property
     def thumbnail_url(self):
