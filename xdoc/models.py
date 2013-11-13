@@ -28,6 +28,12 @@ class Node(models.Model):
         return self._filetype
 
     @property
+    def has_children(self):
+        if Node.objects.filter(parent=self).count() > 0:
+            return True
+        return False
+
+    @property
     def form(self):
         return import_class(self._get_settings('form'))
 

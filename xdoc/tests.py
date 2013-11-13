@@ -1,3 +1,4 @@
+import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -19,6 +20,14 @@ class NodeMethodTests(TestCase):
         document = Document(name='foo.txt')
         document.save()
         self.assertEqual('Document', document.filetype)
+
+    def test_has_children(self):
+        node = Node(name='foo')
+        node.save()
+        document = Document(name='bar.txt', parent=node)
+        document.save()
+        self.assertTrue(node.has_children)
+        self.assertFalse(document.has_children)
 
     def test_document_get_fileobject(self):
         Document(name='foo.txt').save()
@@ -43,36 +52,85 @@ class NodeMethodTests(TestCase):
         self.assertIsInstance(node.form(), NodeForm)
 
 
-class ViewTests(TestCase):
-
-    def setUp(self):
-        self.user = User.objects.create_user(username='test', password='secret')
-        self.node = Node(name='foo')
-        self.node.save()
-
-    def login(self):
-        self.client.login(username='test', password='secret')
+class ViewTestWithoutLogin(TestCase):
 
     def test_main_without_login(self):
         response = self.client.get(reverse('xdoc:main'))
         self.assertEquals(302, response.status_code)
 
-    def test_main_with_login(self):
-        self.login()
+
+class ViewTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='secret')
+        self.client.login(username='test', password='secret')
+        self.node = Node(name='foo')
+        self.node.save()
+
+    def test_main(self):
         response = self.client.get(reverse('xdoc:main'))
         self.assertEquals(200, response.status_code)
         self.assertInHTML('<div ng-view/>', response.content)
 
     def test_edit(self):
-        self.login()
         response = self.client.get(
             reverse('xdoc:edit', kwargs={'pk': self.node.pk}))
         self.assertIn('value="foo"', response.content)
 
     def test_edit_with_POST(self):
-        self.login()
         response = self.client.post(
             reverse('xdoc:edit', kwargs={'pk': self.node.pk}),
             data={'name': 'bar.txt'})
         self.assertIn('save successful', response.content)
         self.assertEqual('bar.txt', Node.objects.get().name)
+
+    def test_add(self):
+        response = self.client.get(
+            reverse('xdoc:add', kwargs={'pk': 'add', 'node_name': 'Node'}))
+        self.assertIn('value=""', response.content)  # empty field
+
+    def test_add_with_POST(self):
+        response = self.client.post(
+            reverse('xdoc:add', kwargs={'pk': 'add', 'node_name': 'Node'}),
+            data={'name': 'bar.txt'})
+        self.assertIn('save successful', response.content)
+        self.assertEqual(2, Node.objects.all().count())  # insert row
+
+    def test_node_detail(self):
+        response = self.client.get(
+            reverse('xdoc:node_detail', kwargs={'pk': self.node.pk}))
+        self.assertDictContainsSubset({'name': 'foo'},
+                                      json.loads(response.content))
+
+    def test_siteconfig(self):
+        response = self.client.get(reverse('xdoc:config'))
+        data = json.loads(response.content)
+        self.assertDictContainsSubset({'username': 'test'}, data)
+        self.assertIn('node_map', data)
+
+    def test_node_list(self):
+        response = self.client.get(reverse('xdoc:node_list'))
+        data = json.loads(response.content)
+        self.assertDictContainsSubset({'name': 'foo'}, data['results'][0])
+
+    def test_node_list_with_query(self):
+        Document(name='bar.txt').save()
+        response = self.client.get(reverse('xdoc:node_list'), {'q': 'foo'})
+        self.assertIn('foo', response.content)
+        self.assertNotIn('bar', response.content)
+        response = self.client.get(reverse('xdoc:node_list'), {'q': 'bar'})
+        self.assertIn('bar', response.content)
+
+    def test_node_list_with_parent_node(self):
+        Document(name='bar.txt', parent=self.node).save()
+
+        # without parent-parameter
+        response = self.client.get(reverse('xdoc:node_list'))
+        self.assertNotIn('bar', response.content)
+
+        # with parent-parameter
+        response = self.client.get(reverse('xdoc:node_list'), {
+            'parent_node': self.node.pk})
+        self.assertIn('bar', response.content)
+
+

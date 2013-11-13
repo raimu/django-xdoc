@@ -1,4 +1,4 @@
-angular.module('browser', []).
+var app = angular.module('browser', []).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: ListCtrl, templateUrl: '/static/xdoc/browser.html'}).
@@ -8,22 +8,72 @@ angular.module('browser', []).
             otherwise({redirectTo: '/'});
     });
 
+app.run(function ($rootScope) {
+    $rootScope.start = null;
+    $rootScope.q = null;
+    $rootScope.parent_node = null;
+});
 
-function ListCtrl($scope, $http) {
 
-    $scope.load_data = function() {
-        $http.get('/xdoc/config').success(function(data){
+function ListCtrl($scope, $http, $rootScope) {
+    "use strict";
+
+    $scope.loadConfig = function() {
+        $http.get('/xdoc/api/config').success(function(data){
             $scope.config = data;
         });
-        $http.get('/xdoc/api/node/').success(function(data) {
+
+    };
+
+    $scope.loadNode = function() {
+        var config = {params: {
+            parent_node: $rootScope.parent_node,
+            start: $rootScope.start,
+            q: $rootScope.q
+        }};
+        $http.get('/xdoc/api/node/', config).success(function(data) {
+            $rootScope.parent_node = data.parent_node;
             $scope.count = data.count;
-            $scope.next = data.next;
-            $scope.previous = data.previous;
+            $rootScope.start = data.start;
+            $scope.paginate = data.paginate;
+            $rootScope.q = data.q;
             $scope.nodes = data.results;
         });
     };
 
-    $scope.load_data();
+    $scope.runSearch = function() {
+        $rootScope.start = 0;
+        $rootScope.q = $scope.q;
+        $scope.loadNode();
+
+    };
+
+    $scope.nextPage = function() {
+        $rootScope.start += $scope.paginate;
+        $scope.loadNode();
+    };
+
+    $scope.previousPage = function() {
+        $rootScope.start -= $scope.paginate;
+        $scope.loadNode();
+
+    };
+
+    $scope.changeDirectory = function(nodeId) {
+        $rootScope.parent_node = nodeId;
+        $scope.loadNode();
+    };
+
+    $scope.pageEnd = function() {
+        return Math.min($scope.start + $scope.paginate, $scope.count)
+    };
+
+    $scope.init = function() {
+        $scope.loadConfig();
+        $scope.loadNode();
+    };
+
+    $scope.init();
 }
 
 

@@ -2,9 +2,10 @@ import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.core.context_processors import csrf
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.shortcuts import render, get_object_or_404
-from rest_framework import viewsets
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from xdoc.models import Node
 from xdoc.serializers import NodeSerializer
 
@@ -12,11 +13,6 @@ from xdoc.serializers import NodeSerializer
 @login_required
 def main(request):
     return render(request, "xdoc/main.html")
-
-
-class NodeViewSet(viewsets.ModelViewSet):
-    queryset = Node.objects.all()
-    serializer_class = NodeSerializer
 
 
 @login_required
@@ -45,3 +41,42 @@ def config(request):
         'username': request.user.username,
     }
     return HttpResponse(json.dumps(siteconfig))
+
+
+class NodeList(APIView):
+
+    def get_param(self, name, default):
+        if name in self.request.GET:
+            return self.request.GET[name]
+        return default
+
+    def get(self, request, format=None):
+        self.request = request
+        nodes = Node.objects.all()
+        result = {
+            'parent_node': int(self.get_param('parent_node', default=0)),
+            'start': int(self.get_param('start', default=0)),
+            'paginate': int(self.get_param('paginate', default=10)),
+            'q': self.get_param('q', default=''),
+        }
+
+        if result['parent_node'] == 0:
+            result['parent_node'] = None
+        nodes = nodes.filter(parent=result['parent_node'])
+
+        if result['q'] != '':
+            nodes = nodes.filter(name__contains=result['q'])
+
+        end = result['paginate'] + result['start']
+        serializer = NodeSerializer(nodes[result['start']:end], many=True)
+        result['results'] = serializer.data
+        result['count'] = nodes.count()
+        return Response(result)
+
+
+class NodeDetail(APIView):
+
+    def get(self, request, pk, format=None):
+        node = get_object_or_404(Node, pk=pk)
+        serializer = NodeSerializer(node)
+        return Response(serializer.data)
