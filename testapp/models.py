@@ -1,6 +1,9 @@
 from django.db import models
 from django.forms import ModelForm
 from xdoc.models import Node
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout
+from crispy_forms.bootstrap import TabHolder, Tab, Field
 
 
 class Picto(models.Model):
@@ -27,3 +30,14 @@ class BusinessCard(Node):
 class BusinessCardForm(ModelForm):
     class Meta:
         model = BusinessCard
+
+    def __init__(self, *args, **kwargs):
+        super(BusinessCardForm, self).__init__(*args, **kwargs)
+        self.helper = FormHelper()
+        self.helper.layout = Layout(TabHolder(
+            Tab('card', 'first_name', 'last_name',
+                Field('color', css_class='chosen-select'),
+                Field('pictos', css_class='chosen-select')),
+            Tab('address', Field('address', css_class='ckeditor')),
+            Tab('meta', 'name', 'parent')
+        ))

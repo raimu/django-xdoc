@@ -1,3 +1,3 @@
 django
 djangorestframework
-django-bootstrap-form
+django-crispy-forms

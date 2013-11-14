@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'xdoc',
     'rest_framework',
-    'bootstrapform',
+    'crispy_forms',
     'testapp',
 )
 
@@ -90,6 +90,8 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticated',),
     'PAGINATE_BY': 10
 }
+
+CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 XDOC_NODE_MAP = {
     'Node': {

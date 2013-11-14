@@ -114,7 +114,7 @@ function EditCtrl($scope, $routeParams) {
             'style="width: 100%; border: none;" />');
         $(element).load(function(){
             var iframe = $('iframe')
-            iframe.height(iframe.contents().find('html').height());
+            iframe.height(iframe.contents().find('html').height() + 30);
         }).appendTo('#iframeContent');
     };
 
