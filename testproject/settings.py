@@ -107,6 +107,9 @@ XDOC_NODE_MAP = {
     'BusinessCard': {
         'node': 'testapp.models.BusinessCard',
         'form': 'testapp.models.BusinessCardForm',
-        'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-x-vcard.png'
+        'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-x-vcard.png',
+        'templates': {
+            'edit': 'testapp/edit.html'
+        }
     },
 }

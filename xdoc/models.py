@@ -37,6 +37,13 @@ class Node(models.Model):
     def form(self):
         return import_class(self._get_settings('form'))
 
+    def get_template(self, name, default=None):
+        node_setting = settings.XDOC_NODE_MAP[self.filetype]
+        if 'templates' in node_setting:
+            if name in node_setting['templates']:
+                return node_setting['templates'][name]
+        return default
+
     def get_fileobject(self):
         return import_class(self._get_settings('node')).objects.get(pk=self.pk)
 

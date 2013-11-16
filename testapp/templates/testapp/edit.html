@@ -1,0 +1,46 @@
+{% extends 'xdoc/edit.html' %}
+
+
+{% block html_head %}
+<link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/jquery-handsontable/dist/jquery.handsontable.full.css"
+{% endblock %}
+
+
+{% block javascript %}
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-handsontable/dist/jquery.handsontable.full.js"></script>
+<script>
+
+var ht;
+
+function parse_json_or_default(data, def) {
+    try {
+        return $.parseJSON(data);
+    }
+    catch (e) {
+        return def;
+    }
+}
+
+$(document).ready(function(){
+    $("#id_table").parent().handsontable({
+        data: parse_json_or_default($('#id_table').val(), [['','','']]),
+        startRows: 5,
+        startCols: 5,
+        minSpareCols: 1,
+        minSpareRows: 1,
+        contextMenu: true,
+        minCols: 3,
+        maxCols: 3,
+        minRows: 3,
+        maxRows: 8,
+        colHeaders: ['red', 'blue','green'],
+        rowHeaders: ['h1', 'p', 'addr'],
+        beforeRender: function() {
+            $('#id_table').val(JSON.stringify(this.getData()));
+        }
+    });
+    $('#id_table').hide();
+});
+
+</script>
+{% endblock %}

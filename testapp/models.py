@@ -23,6 +23,7 @@ class BusinessCard(Node):
     first_name = models.CharField(max_length=100, blank=True)
     last_name = models.CharField(max_length=100, blank=True)
     address = models.TextField(blank=True)
+    table = models.TextField(blank=True)
     color = models.CharField(max_length=7, choices=COLOR, blank=True)
     pictos = models.ManyToManyField(Picto, blank=True, null=True)
 
@@ -39,5 +40,6 @@ class BusinessCardForm(ModelForm):
                 Field('color', css_class='chosen-select'),
                 Field('pictos', css_class='chosen-select')),
             Tab('address', Field('address', css_class='ckeditor')),
+            Tab('table', Field('table')),
             Tab('meta', 'name', 'parent')
         ))

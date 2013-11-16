@@ -2,6 +2,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from testapp.models import BusinessCard
 from xdoc.models import Node, Document, NodeForm
 
 
@@ -140,3 +141,18 @@ class ViewTests(TestCase):
             'parent_node': self.node.pk})
         data = json.loads(response.content)
         self.assertEqual([['foo', self.node.id]], data['path'])
+
+
+class TestAppTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='test', password='secret')
+        self.client.login(username='test', password='secret')
+        self.card = BusinessCard(name='testuser')
+        self.card.save()
+
+
+    def test_custom_template_setting(self):
+        response = self.client.get(
+            reverse('xdoc:edit', kwargs={'pk': self.card.pk}))
+        self.assertIn('handsontable', response.content)

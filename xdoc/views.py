@@ -32,7 +32,8 @@ def edit(request, pk, node_name=None):
 
     c = {'form': form, 'request': request, 'message': message}
     c.update(csrf(request))
-    return render(request, "xdoc/edit.html", c)
+    template = node.get_template('edit', default="xdoc/edit.html")
+    return render(request, template, c)
 
 
 def config(request):

@@ -4,6 +4,7 @@
 <head>
     <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/chosen_v1.0.0/chosen.min.css">
+    {% block html_head %}{% endblock %}
 </head>
 <body>
 
@@ -21,5 +22,6 @@
 <script>
     $(".chosen-select").chosen()
 </script>
+{% block javascript %}{% endblock %}
 </body>
 </html>

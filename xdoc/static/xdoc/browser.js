@@ -113,9 +113,19 @@ function EditCtrl($scope, $routeParams) {
         var element = $('<iframe src="' + $scope._generate_url() +'"' +
             'style="width: 100%; border: none;" />');
         $(element).load(function(){
-            var iframe = $('iframe')
-            iframe.height(iframe.contents().find('html').height() + 30);
+            var iframe = $('iframe');
+            $scope._adjustIframeHeight(iframe);
+            iframe.contents().click(function(){
+                $scope._adjustIframeHeight(iframe);
+            });
+            iframe.contents().keypress(function(){
+                $scope._adjustIframeHeight(iframe);
+            });
         }).appendTo('#iframeContent');
+    };
+
+    $scope._adjustIframeHeight = function(iframe) {
+        iframe.height(iframe.contents().find('html').height() + 30);
     };
 
     $scope._generate_url = function() {
@@ -123,7 +133,7 @@ function EditCtrl($scope, $routeParams) {
             return '/xdoc/add/' + $routeParams['addNodeName'];
         }
         return '/xdoc/edit/' + $routeParams['nodeId'];
-    }
+    };
 
     $scope.on_save = function() {
         $('iframe').contents().find('form').submit()
