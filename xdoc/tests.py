@@ -49,6 +49,17 @@ class NodeMethodTests(TestCase):
         self.assertEqual('foo/bar/baz.txt',
                          '/'.join([i.name for i in baz.path]))
 
+    def test_id_path(self):
+        foo = Node(name='foo')
+        bar = Node(name='bar', parent=foo)
+        baz = Document(name='baz.txt', parent=bar)
+        foo.save()
+        bar.save()
+        baz.save()
+        self.assertEqual('/1/2/3', baz.path_id)
+
+
+
     def test_form(self):
         node = Node(name='foo')
         self.assertIsInstance(node.form(), NodeForm)
@@ -141,6 +152,24 @@ class ViewTests(TestCase):
             'parent_node': self.node.pk})
         data = json.loads(response.content)
         self.assertEqual([['foo', self.node.id]], data['path'])
+
+    def test_search_in_subdirectory(self):
+        other_node = Node(name='other root node')
+        other_node.save()
+        subdirectory = Node(name='subdirectory', parent=self.node)
+        subdirectory.save()
+        Document(name='document a').save()
+        Document(name='document b', parent=self.node).save()
+        Document(name='document c', parent=subdirectory).save()
+        Document(name='document d', parent=other_node).save()
+
+        response = self.client.get(reverse('xdoc:node_list'),
+                                   {'q': 'document',
+                                    'parent_node': self.node.pk})
+        self.assertNotIn('document a', response.content)
+        self.assertIn('document b', response.content)
+        self.assertIn('document c', response.content)
+        self.assertNotIn('document d', response.content)
 
 
 class TestAppTests(TestCase):

@@ -65,11 +65,13 @@ class NodeList(APIView):
             result['parent_node'] = None
             result['path'] = None
         else:
-            parents = get_object_or_404(Node, pk=result['parent_node'])
-            result['path'] = [[i.name, i.id] for i in parents.path]
-        nodes = nodes.filter(parent=result['parent_node'])
+            parent = get_object_or_404(Node, pk=result['parent_node'])
+            result['path'] = [[i.name, i.id] for i in parent.path]
+            nodes = nodes.filter(path_id__startswith=parent.path_id)
 
-        if result['q'] != '':
+        if result['q'] == '':
+            nodes = nodes.filter(parent=result['parent_node'])
+        else:
             nodes = nodes.filter(name__contains=result['q'])
 
         end = result['paginate'] + result['start']
