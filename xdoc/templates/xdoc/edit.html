@@ -8,12 +8,13 @@
 </head>
 <body>
 
-{{ message }}
+{% block content %}
+    {{ message }}
 
-
-<form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
-    {% crispy form %}
-</form>
+    <form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
+        {% crispy form %}
+    </form>
+{% endblock %}
 
 <script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.2.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>

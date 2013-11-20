@@ -1,0 +1,6 @@
+include LICENSE
+include README.rst
+include requirements.txt
+recursive-include xdoc/static *
+recursive-include xdoc/templates *
+prune xdoc/static/xdoc/lib/icons
