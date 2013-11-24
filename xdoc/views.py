@@ -30,7 +30,7 @@ def edit(request, pk, node_name=None):
             message.append('save successful')
             form.save()
 
-    c = {'form': form, 'request': request, 'message': message}
+    c = {'form': form, 'request': request, 'message': message, 'node': node}
     c.update(csrf(request))
     template = node.get_template('edit', default="xdoc/edit.html")
     return render(request, template, c)
@@ -38,7 +38,7 @@ def edit(request, pk, node_name=None):
 
 def config(request):
     siteconfig = {
-        'node_map': [key for key in settings.XDOC_NODE_MAP],
+        'node_map': settings.XDOC_NODE_MAP,
         'username': request.user.username,
     }
     return HttpResponse(json.dumps(siteconfig))

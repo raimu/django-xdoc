@@ -58,8 +58,6 @@ class NodeMethodTests(TestCase):
         baz.save()
         self.assertEqual('/1/2/3', baz.path_id)
 
-
-
     def test_form(self):
         node = Node(name='foo')
         self.assertIsInstance(node.form(), NodeForm)
@@ -116,10 +114,12 @@ class ViewTests(TestCase):
                                       json.loads(response.content))
 
     def test_siteconfig(self):
+        Node(name='foo').save()
         response = self.client.get(reverse('xdoc:config'))
         data = json.loads(response.content)
         self.assertDictContainsSubset({'username': 'test'}, data)
         self.assertIn('node_map', data)
+        self.assertEqual('Directory', data['node_map']['Node']['label'])
 
     def test_node_list(self):
         response = self.client.get(reverse('xdoc:node_list'))
@@ -179,7 +179,6 @@ class TestAppTests(TestCase):
         self.client.login(username='test', password='secret')
         self.card = BusinessCard(name='testuser')
         self.card.save()
-
 
     def test_custom_template_setting(self):
         response = self.client.get(

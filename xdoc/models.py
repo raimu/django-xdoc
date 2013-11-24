@@ -40,9 +40,9 @@ class Node(models.Model):
 
     def get_template(self, name, default=None):
         node_setting = settings.XDOC_NODE_MAP[self.filetype]
-        if 'templates' in node_setting:
-            if name in node_setting['templates']:
-                return node_setting['templates'][name]
+        if name in node_setting:
+            if 'template' in node_setting[name]:
+                return node_setting[name]['template']
         return default
 
     def get_fileobject(self):
