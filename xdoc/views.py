@@ -30,7 +30,7 @@ def edit(request, pk, node_name=None):
             message.append('save successful')
             form.save()
 
-    c = {'form': form, 'request': request, 'message': message}
+    c = {'form': form, 'request': request, 'message': message, 'node': node}
     c.update(csrf(request))
     template = node.get_template('edit', default="xdoc/edit.html")
     return render(request, template, c)
@@ -38,7 +38,7 @@ def edit(request, pk, node_name=None):
 
 def config(request):
     siteconfig = {
-        'node_map': [key for key in settings.XDOC_NODE_MAP],
+        'node_map': settings.XDOC_NODE_MAP,
         'username': request.user.username,
     }
     return HttpResponse(json.dumps(siteconfig))
@@ -65,11 +65,13 @@ class NodeList(APIView):
             result['parent_node'] = None
             result['path'] = None
         else:
-            parents = get_object_or_404(Node, pk=result['parent_node'])
-            result['path'] = [[i.name, i.id] for i in parents.path]
-        nodes = nodes.filter(parent=result['parent_node'])
+            parent = get_object_or_404(Node, pk=result['parent_node'])
+            result['path'] = [[i.name, i.id] for i in parent.path]
+            nodes = nodes.filter(path_id__startswith=parent.path_id)
 
-        if result['q'] != '':
+        if result['q'] == '':
+            nodes = nodes.filter(parent=result['parent_node'])
+        else:
             nodes = nodes.filter(name__contains=result['q'])
 
         end = result['paginate'] + result['start']

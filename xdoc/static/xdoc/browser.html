@@ -17,8 +17,8 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Neu <b class="caret"></b></a>
                         <ul class="dropdown-menu" >
-                            <li ng-repeat="n in config.node_map">
-                                <a ng-href="#/add/{{n}}">{{n}}</a>
+                            <li ng-repeat="(key, value) in config.node_map">
+                                <a ng-href="#/add/{{key}}">{{value.label}}</a>
                             </li>
                         </ul>
                     </li>

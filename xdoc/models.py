@@ -10,6 +10,7 @@ class Node(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     _filetype = models.CharField(max_length=100, blank=True, editable=False)
+    path_id = models.TextField(blank=True, null=True, editable=False)
 
     @property
     def path(self):
@@ -39,9 +40,9 @@ class Node(models.Model):
 
     def get_template(self, name, default=None):
         node_setting = settings.XDOC_NODE_MAP[self.filetype]
-        if 'templates' in node_setting:
-            if name in node_setting['templates']:
-                return node_setting['templates'][name]
+        if name in node_setting:
+            if 'template' in node_setting[name]:
+                return node_setting[name]['template']
         return default
 
     def get_fileobject(self):
@@ -55,8 +56,10 @@ class Node(models.Model):
         return settings.XDOC_NODE_MAP[self.filetype][name]
 
     def save(self, *args, **kwargs):
-        self._filetype = self.filetype
         super(Node, self).save(*args, **kwargs)
+        self._filetype = self.filetype
+        self.path_id = '/' + '/'.join([str(i.pk) for i in self.path])
+        super(Node, self).save()
 
     def __unicode__(self):
         return self.name

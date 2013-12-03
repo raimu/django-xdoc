@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # my apps
     'xdoc',
     'rest_framework',
     'crispy_forms',
@@ -95,21 +96,24 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 XDOC_NODE_MAP = {
     'Node': {
+        'label': 'Directory',
         'node': 'xdoc.models.Node',
         'form': 'xdoc.models.NodeForm',
         'thumbnail': '/static/xdoc/lib/icons/places/folder.png'
     },
     'Document': {
+        'label': 'Document',
         'node': 'xdoc.models.Document',
         'form': 'xdoc.models.DocumentForm',
         'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-plain.png'
     },
     'BusinessCard': {
+        'label': 'Businesscard',
         'node': 'testapp.models.BusinessCard',
         'form': 'testapp.models.BusinessCardForm',
         'thumbnail': '/static/xdoc/lib/icons/mimetypes/text-x-vcard.png',
-        'templates': {
-            'edit': 'testapp/edit.html'
-        }
+        'edit': {
+            'template': 'testapp/edit.html',
+        },
     },
 }

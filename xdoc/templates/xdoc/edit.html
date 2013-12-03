@@ -8,19 +8,28 @@
 </head>
 <body>
 
-{{ message }}
+{% block content %}
+    {{ message }}
 
-
-<form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
-    {% crispy form %}
-</form>
+    <form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
+        {% crispy form %}
+        <a class="btn btn-primary btn-save">save</a>
+        <a class="btn btn-default btn-back">back</a>
+    </form>
+{% endblock %}
 
 <script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.2.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/chosen_v1.0.0/chosen.jquery.min.js"></script>
 <script src="{{ STATIC_URL }}xdoc/lib/ckeditor/ckeditor.js"></script>
 <script>
-    $(".chosen-select").chosen()
+    $(".chosen-select").chosen();
+    $(".btn-save").click(function(){
+        $('form').submit();
+    });
+    $(".btn-back").click(function(){
+        window.top.location.href='../../#/';
+    });
 </script>
 {% block javascript %}{% endblock %}
 </body>

@@ -1,4 +1,4 @@
-var app = angular.module('browser', []).
+var browser = angular.module('browser', []).
     config(function($routeProvider) {
         $routeProvider.
             when('/', {controller: ListCtrl, templateUrl: '/static/xdoc/browser.html'}).
@@ -8,22 +8,30 @@ var app = angular.module('browser', []).
             otherwise({redirectTo: '/'});
     });
 
-app.run(function ($rootScope) {
+
+browser.factory('BrowserService', function($http) {
+   return {
+        getConfig: function() {
+            return $http.get('/xdoc/api/config')
+                .then(function(result) {
+                    return result.data;
+                });
+        }
+   }
+});
+
+
+browser.run(function ($rootScope) {
     $rootScope.start = null;
     $rootScope.q = null;
     $rootScope.parent_node = null;
 });
 
 
-function ListCtrl($scope, $http, $rootScope) {
+function ListCtrl($scope, $http, $rootScope, BrowserService) {
     "use strict";
 
-    $scope.loadConfig = function() {
-        $http.get('/xdoc/api/config').success(function(data){
-            $scope.config = data;
-        });
-
-    };
+    $scope.config = BrowserService.getConfig();
 
     $scope.loadNode = function() {
         var config = {params: {
@@ -86,7 +94,6 @@ function ListCtrl($scope, $http, $rootScope) {
     };
 
     $scope.init = function() {
-        $scope.loadConfig();
         $scope.loadNode();
     };
 
@@ -121,6 +128,12 @@ function EditCtrl($scope, $routeParams) {
             iframe.contents().keypress(function(){
                 $scope._adjustIframeHeight(iframe);
             });
+            iframe.contents().mousemove(function(){
+                $scope._adjustIframeHeight(iframe);
+            });
+            iframe.contents().scroll(function(){
+                $scope._adjustIframeHeight(iframe);
+            });
         }).appendTo('#iframeContent');
     };
 
@@ -133,10 +146,6 @@ function EditCtrl($scope, $routeParams) {
             return '/xdoc/add/' + $routeParams['addNodeName'];
         }
         return '/xdoc/edit/' + $routeParams['nodeId'];
-    };
-
-    $scope.on_save = function() {
-        $('iframe').contents().find('form').submit()
     };
 
     $scope.init = function() {
