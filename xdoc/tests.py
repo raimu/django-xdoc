@@ -18,15 +18,13 @@ class NodeMethodTests(TestCase):
         self.assertIn('folder', node.thumbnail_url)
 
     def test_filetype(self):
-        document = Document(name='foo.txt')
-        document.save()
+        document = Document.objects.create(name='foo.txt')
         self.assertEqual('Document', document.filetype)
 
     def test_has_children(self):
         node = Node(name='foo')
         node.save()
-        document = Document(name='bar.txt', parent=node)
-        document.save()
+        document = Document.objects.create(name='bar.txt', parent=node)
         self.assertTrue(node.has_children)
         self.assertFalse(document.has_children)
 
@@ -50,17 +48,18 @@ class NodeMethodTests(TestCase):
                          '/'.join([i.name for i in baz.path]))
 
     def test_id_path(self):
-        foo = Node(name='foo')
-        bar = Node(name='bar', parent=foo)
-        baz = Document(name='baz.txt', parent=bar)
-        foo.save()
-        bar.save()
-        baz.save()
+        foo = Node.objects.create(name='foo')
+        bar = Node.objects.create(name='bar', parent=foo)
+        baz = Document.objects.create(name='baz.txt', parent=bar)
         self.assertEqual('/1/2/3', baz.path_id)
 
     def test_form(self):
         node = Node(name='foo')
         self.assertIsInstance(node.form(), NodeForm)
+
+    def test_create_node(self):
+        """ Test primary key error"""
+        Node.objects.create(name='foo')
 
 
 class ViewTestWithoutLogin(TestCase):
@@ -75,8 +74,7 @@ class ViewTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='secret')
         self.client.login(username='test', password='secret')
-        self.node = Node(name='foo')
-        self.node.save()
+        self.node = Node.objects.create(name='foo')
 
     def test_main(self):
         response = self.client.get(reverse('xdoc:main'))
@@ -154,10 +152,9 @@ class ViewTests(TestCase):
         self.assertEqual([['foo', self.node.id]], data['path'])
 
     def test_search_in_subdirectory(self):
-        other_node = Node(name='other root node')
-        other_node.save()
-        subdirectory = Node(name='subdirectory', parent=self.node)
-        subdirectory.save()
+        other_node = Node.objects.create(name='other root node')
+        subdirectory = Node.objects.create(name='subdirectory',
+                                           parent=self.node)
         Document(name='document a').save()
         Document(name='document b', parent=self.node).save()
         Document(name='document c', parent=subdirectory).save()
@@ -177,8 +174,7 @@ class TestAppTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='test', password='secret')
         self.client.login(username='test', password='secret')
-        self.card = BusinessCard(name='testuser')
-        self.card.save()
+        self.card = BusinessCard.objects.create(name='testuser')
 
     def test_custom_template_setting(self):
         response = self.client.get(

@@ -10,7 +10,7 @@ class Node(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     _filetype = models.CharField(max_length=100, blank=True, editable=False)
-    path_id = models.TextField(blank=True, editable=False)
+    path_id = models.TextField(blank=True, null=True, editable=False)
 
     @property
     def path(self):
@@ -56,11 +56,10 @@ class Node(models.Model):
         return settings.XDOC_NODE_MAP[self.filetype][name]
 
     def save(self, *args, **kwargs):
-        self._filetype = self.filetype
-        if self.pk is None:
-            super(Node, self).save(*args, **kwargs)
-        self.path_id = '/' + '/'.join([str(i.pk) for i in self.path])
         super(Node, self).save(*args, **kwargs)
+        self._filetype = self.filetype
+        self.path_id = '/' + '/'.join([str(i.pk) for i in self.path])
+        super(Node, self).save()
 
     def __unicode__(self):
         return self.name
