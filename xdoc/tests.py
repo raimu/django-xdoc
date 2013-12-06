@@ -2,6 +2,7 @@ import json
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
+from guardian.shortcuts import assign_perm
 from testapp.models import BusinessCard
 from xdoc.models import Node, Document, NodeForm
 
@@ -167,6 +168,45 @@ class ViewTests(TestCase):
         self.assertIn('document b', response.content)
         self.assertIn('document c', response.content)
         self.assertNotIn('document d', response.content)
+
+
+class ViewPermissionsTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create_user(username='testuser',
+                                             password='secret')
+        self.client.login(username='testuser', password='secret')
+        self.node = Node.objects.create(name='foo')
+        assign_perm('view_node', self.user, self.node)
+
+    def test_permissions_list(self):
+        response = self.client.get(reverse('xdoc:permissions',
+                                           kwargs={'pk': self.node.pk}))
+        self.assertIn('testuser', response.content)
+
+    def test_permissions_edit(self):
+        response = self.client.get(reverse('xdoc:permissions_edit', kwargs={
+            'pk': self.node.pk, 'user': self.user.pk
+        }))
+        self.assertIn('view_node', response.content)
+
+    def test_edit_with_post(self):
+        response = self.client.post(reverse('xdoc:permissions_edit', kwargs={
+            'pk': self.node.pk, 'user': self.user.pk
+        }), {'permissions': ['add_node']})
+        self.assertIn('successful', response.content)
+
+    def test_permissions_add(self):
+        response = self.client.post(
+            reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
+            {'username': 'testuser'})
+        self.assertRedirects(response, 'xdoc/permissions/1/0/')
+
+    def test_permissions_add_with_not_exist_user(self):
+        response = self.client.post(
+            reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
+            {'username': 'not_exist_user'})
+        self.assertRedirects(response, 'xdoc/permissions/1/')
 
 
 class TestAppTests(TestCase):

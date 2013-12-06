@@ -4,6 +4,7 @@ var browser = angular.module('browser', []).
             when('/', {controller: ListCtrl, templateUrl: '/static/xdoc/browser.html'}).
             when('/add/:addNodeName', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
             when('/edit/:nodeId', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
+            when('/permissions/:nodeId', {controller: PermissionCtrl, templateUrl: '/static/xdoc/edit.html'}).
             when('/detail/:nodeId', {controller: DetailCtrl, templateUrl: '/static/xdoc/detail.html'}).
             otherwise({redirectTo: '/'});
     });
@@ -151,4 +152,9 @@ function EditCtrl($scope, $routeParams, BrowserService) {
     };
 
     $scope.init();
+}
+
+
+function PermissionCtrl($routeParams, BrowserService) {
+    BrowserService.insert_iframe("/xdoc/permissions/" + $routeParams['nodeId']);
 }

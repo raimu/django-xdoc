@@ -1,9 +1,13 @@
 import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
 from django.core.context_processors import csrf
-from django.http import HttpResponse, Http404
-from django.shortcuts import render, get_object_or_404
+from django.core.exceptions import ObjectDoesNotExist
+from django.http import HttpResponse
+from django.shortcuts import render, get_object_or_404, redirect
+from guardian.forms import UserObjectPermissionsForm
+from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from xdoc.models import Node
@@ -87,3 +91,38 @@ class NodeDetail(APIView):
         node = get_object_or_404(Node, pk=pk)
         serializer = NodeSerializer(node)
         return Response(serializer.data)
+
+
+@login_required
+def permissions(request, pk):
+    node = get_object_or_404(Node, pk=pk)
+    users = get_users_with_perms(node, with_group_users=False)
+    users = [[i, get_perms(i, node)] for i in users]
+    groups = [[i, get_perms(i, node)] for i in get_groups_with_perms(node)]
+    c = {'users': users, 'groups': groups, 'node': node}
+    c.update(csrf(request))
+    return render(request, 'xdoc/permissions.html', c)
+
+
+@login_required
+def permissions_edit(request, pk, user):
+    message = []
+    node = get_object_or_404(Node, pk=pk)
+    user = get_object_or_404(User, pk=user)
+    form = UserObjectPermissionsForm(user, node, request.POST or None)
+    if request.method == 'POST' and form.is_valid():
+        form.save_obj_perms()
+        message.append('save successful')
+    c = {'form': form, 'request': request, 'node': node, 'message': message}
+    return render(request, 'xdoc/permissions_edit.html', c)
+
+
+@login_required
+def permissions_add(request, pk):
+    if request.method == "POST" and 'username' in request.POST:
+        try:
+            user = User.objects.get(username=request.POST['username'])
+            return redirect('xdoc:permissions_edit', pk=pk, user=user.pk)
+        except ObjectDoesNotExist:
+            pass
+    return redirect('xdoc:permissions', pk=pk)
