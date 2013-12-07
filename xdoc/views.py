@@ -1,12 +1,14 @@
 import json
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.context_processors import csrf
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
-from guardian.forms import UserObjectPermissionsForm
+from django.views.generic import View
+from guardian.forms import UserObjectPermissionsForm, GroupObjectPermissionsForm
+from guardian.mixins import LoginRequiredMixin
 from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -104,25 +106,49 @@ def permissions(request, pk):
     return render(request, 'xdoc/permissions.html', c)
 
 
-@login_required
-def permissions_edit(request, pk, user):
-    message = []
-    node = get_object_or_404(Node, pk=pk)
-    user = get_object_or_404(User, pk=user)
-    form = UserObjectPermissionsForm(user, node, request.POST or None)
-    if request.method == 'POST' and form.is_valid():
-        form.save_obj_perms()
-        message.append('save successful')
-    c = {'form': form, 'request': request, 'node': node, 'message': message}
-    return render(request, 'xdoc/permissions_edit.html', c)
+class PermissionsEditUser(LoginRequiredMixin, View):
+
+    form = UserObjectPermissionsForm
+    user_or_group_class = User
+
+    def _get_context(self, request, pk, user):
+        node = get_object_or_404(Node, pk=pk)
+        user_or_group = get_object_or_404(self.user_or_group_class, pk=user)
+        form = self.form(user_or_group, node, request.POST or None)
+        c = {'form': form, 'request': request, 'node': node}
+        return c
+
+    def get(self, request, pk, user):
+        c = self._get_context(request, pk, user)
+        return render(request, 'xdoc/permissions_edit.html', c)
+
+    def post(self, request, pk, user):
+        c = self._get_context(request, pk, user)
+        if c['form'].is_valid():
+            c['form'].save_obj_perms()
+            c['message'] = 'save successful'
+        return render(request, 'xdoc/permissions_edit.html', c)
+
+
+class PermissionsEditGroup(PermissionsEditUser):
+
+    form = GroupObjectPermissionsForm
+    user_or_group_class = Group
 
 
 @login_required
 def permissions_add(request, pk):
-    if request.method == "POST" and 'username' in request.POST:
-        try:
-            user = User.objects.get(username=request.POST['username'])
-            return redirect('xdoc:permissions_edit', pk=pk, user=user.pk)
-        except ObjectDoesNotExist:
-            pass
+    if request.method == "POST":
+        if 'username' in request.POST:
+            try:
+                user = User.objects.get(username=request.POST['username'])
+                return redirect('xdoc:permissions_edit', pk=pk, user=user.pk)
+            except ObjectDoesNotExist:
+                pass
+        if 'groupname' in request.POST:
+            try:
+                group = Group.objects.get(name=request.POST['groupname'])
+                return redirect('xdoc:permissions_edit_group', pk=pk, user=group.pk)
+            except ObjectDoesNotExist:
+                pass
     return redirect('xdoc:permissions', pk=pk)

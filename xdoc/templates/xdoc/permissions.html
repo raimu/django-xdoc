@@ -62,14 +62,14 @@
                             <span class="glyphicon glyphicon-ok-sign"></span>{% else %}
                             <span class="glyphicon glyphicon-remove-sign"></span>
                         {% endif %}</td>
-                        <td class="text-right"><a class="btn btn-default btn-sm" href="#">edit</a></td>
+                        <td class="text-right"><a class="btn btn-default btn-sm" href="{% url 'xdoc:permissions_edit_group' pk=node.pk user=group.pk %}">edit</a></td>
                     </tr>
                 {% endfor %}
             </table>
 
-            <form class="form-inline" role="form">
+            <form class="form-inline" role="form" method="post" action="{% url 'xdoc:permissions_add_group' node.pk %}">{% csrf_token %}
                 <div class="input-group input-group-lg">
-                    <input type="text" class="form-control" placeholder="groupname">
+                    <input type="text" name="groupname" class="form-control" placeholder="Groupname">
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-primary">add group</button>
                     </span>

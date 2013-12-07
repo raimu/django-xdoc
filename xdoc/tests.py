@@ -1,5 +1,5 @@
 import json
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 from guardian.shortcuts import assign_perm
@@ -177,6 +177,7 @@ class ViewPermissionsTest(TestCase):
                                              password='secret')
         self.client.login(username='testuser', password='secret')
         self.node = Node.objects.create(name='foo')
+        Group.objects.create(name='testgroup')
         assign_perm('view_node', self.user, self.node)
 
     def test_permissions_list(self):
@@ -200,12 +201,24 @@ class ViewPermissionsTest(TestCase):
         response = self.client.post(
             reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
             {'username': 'testuser'})
-        self.assertRedirects(response, 'xdoc/permissions/1/0/')
+        self.assertRedirects(response, 'xdoc/permissions/1/user-0/')
+
+    def test_permissions_add_group(self):
+        response = self.client.post(
+            reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
+            {'groupname': 'testgroup'})
+        self.assertRedirects(response, 'xdoc/permissions/1/group-1/')
 
     def test_permissions_add_with_not_exist_user(self):
         response = self.client.post(
             reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
             {'username': 'not_exist_user'})
+        self.assertRedirects(response, 'xdoc/permissions/1/')
+
+    def test_permissions_add_group_with_not_exist_group(self):
+        response = self.client.post(
+            reverse('xdoc:permissions_add', kwargs={'pk': self.node.pk}),
+            {'groupname': 'not_exist_group'})
         self.assertRedirects(response, 'xdoc/permissions/1/')
 
 
