@@ -1,0 +1,97 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/chosen_v1.0.0/chosen.min.css">
+    {% block html_head %}{% endblock %}
+</head>
+<body>
+<div class="container">
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">User Permissions</div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>user</th>
+                    <th>can view</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for user, permissions in users %}
+                    <tr>
+                        <td>{{ user }}</td>
+                        <td>{% if "view_node" in permissions %}
+                            <span class="glyphicon glyphicon-ok-sign"></span>{% else %}
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        {% endif %}</td>
+                        <td class="text-right"><a class="btn btn-default btn-sm" href="{% url 'xdoc:permissions_edit' pk=node.pk user=user.pk %}">edit</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <form class="form-inline" role="form" method="post" action="{% url 'xdoc:permissions_add' node.pk %}">{% csrf_token %}
+                <div class="input-group input-group-lg">
+                    <input type="text" name="username" class="form-control" placeholder="Username">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary">add user</button>
+                    </span>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <div class="panel panel-primary">
+        <div class="panel-heading">Gruppen Permissions</div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>group</th>
+                    <th>can view</th>
+                    <th></th>
+                </tr>
+                </thead>
+                {% for group, permissions in groups %}
+                    <tr>
+                        <td>{{ group }}</td>
+                        <td>{% if "view_node" in permissions %}
+                            <span class="glyphicon glyphicon-ok-sign"></span>{% else %}
+                            <span class="glyphicon glyphicon-remove-sign"></span>
+                        {% endif %}</td>
+                        <td class="text-right"><a class="btn btn-default btn-sm" href="{% url 'xdoc:permissions_edit_group' pk=node.pk user=group.pk %}">edit</a></td>
+                    </tr>
+                {% endfor %}
+            </table>
+
+            <form class="form-inline" role="form" method="post" action="{% url 'xdoc:permissions_add_group' node.pk %}">{% csrf_token %}
+                <div class="input-group input-group-lg">
+                    <input type="text" name="groupname" class="form-control" placeholder="Groupname">
+                    <span class="input-group-btn">
+                        <button type="submit" class="btn btn-primary">add group</button>
+                    </span>
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <a class="btn btn-default btn-back">back</a>
+</div>
+
+
+
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.2.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
+<script>
+    $(".btn-save").click(function(){
+        $('form').submit();
+    });
+    $(".btn-back").click(function(){
+        window.top.location.href='../../#/';
+    });
+</script>
+</body>
+</html>

@@ -39,6 +39,7 @@ INSTALLED_APPS = (
     # my apps
     'xdoc',
     'rest_framework',
+    'guardian',
     'crispy_forms',
     'testapp',
 )
@@ -93,6 +94,8 @@ REST_FRAMEWORK = {
 }
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+ANONYMOUS_USER_ID = -1
 
 XDOC_NODE_MAP = {
     'Node': {

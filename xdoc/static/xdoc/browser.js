@@ -4,20 +4,44 @@ var browser = angular.module('BrowserApp', ['ngRoute']).
             when('/', {controller: ListCtrl, templateUrl: '/static/xdoc/browser.html'}).
             when('/add/:addNodeName', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
             when('/edit/:nodeId', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
+            when('/permissions/:nodeId', {controller: PermissionCtrl, templateUrl: '/static/xdoc/edit.html'}).
             when('/detail/:nodeId', {controller: DetailCtrl, templateUrl: '/static/xdoc/detail.html'}).
             otherwise({redirectTo: '/'});
     });
 
 
 browser.factory('BrowserService', function($http) {
-   return {
+    return {
         getConfig: function() {
             return $http.get('/xdoc/api/config')
                 .then(function(result) {
                     return result.data;
                 });
+        },
+        insert_iframe: function(url) {
+            var element = $('<iframe src="' + url +'"' +
+                'style="width: 100%; border: none;" />');
+            var adjustIframeHeight = function(iframe) {
+                iframe.height(iframe.contents().find('html').height() + 30);
+            };
+            $(element).load(function(){
+                var iframe = $('iframe');
+                adjustIframeHeight(iframe);
+                iframe.contents().click(function(){
+                    adjustIframeHeight(iframe);
+                });
+                iframe.contents().keypress(function(){
+                    adjustIframeHeight(iframe);
+                });
+                iframe.contents().mousemove(function(){
+                    adjustIframeHeight(iframe);
+                });
+                iframe.contents().scroll(function(){
+                    adjustIframeHeight(iframe);
+                });
+            }).appendTo('#iframeContent');
         }
-   }
+    };
 });
 
 
@@ -117,32 +141,7 @@ function DetailCtrl($scope, $routeParams, $http) {
 }
 
 
-function EditCtrl($scope, $routeParams) {
-
-    $scope.insert_iframe = function() {
-        var element = $('<iframe src="' + $scope._generate_url() +'"' +
-            'style="width: 100%; border: none;" />');
-        $(element).load(function(){
-            var iframe = $('iframe');
-            $scope._adjustIframeHeight(iframe);
-            iframe.contents().click(function(){
-                $scope._adjustIframeHeight(iframe);
-            });
-            iframe.contents().keypress(function(){
-                $scope._adjustIframeHeight(iframe);
-            });
-            iframe.contents().mousemove(function(){
-                $scope._adjustIframeHeight(iframe);
-            });
-            iframe.contents().scroll(function(){
-                $scope._adjustIframeHeight(iframe);
-            });
-        }).appendTo('#iframeContent');
-    };
-
-    $scope._adjustIframeHeight = function(iframe) {
-        iframe.height(iframe.contents().find('html').height() + 30);
-    };
+function EditCtrl($scope, $routeParams, BrowserService) {
 
     $scope._generate_url = function() {
         if('addNodeName' in $routeParams) {
@@ -152,7 +151,13 @@ function EditCtrl($scope, $routeParams) {
     };
 
     $scope.init = function() {
-        $scope.insert_iframe();
+        BrowserService.insert_iframe($scope._generate_url());
     };
+
     $scope.init();
+}
+
+
+function PermissionCtrl($routeParams, BrowserService) {
+    BrowserService.insert_iframe("/xdoc/permissions/" + $routeParams['nodeId']);
 }

@@ -66,6 +66,9 @@ class Node(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = (
+            ('view_node', 'can view node'),
+        )
 
 
 class Document(Node):

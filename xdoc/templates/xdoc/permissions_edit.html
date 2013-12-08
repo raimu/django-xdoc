@@ -1,0 +1,26 @@
+{% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="{{ STATIC_URL }}xdoc/lib/chosen_v1.0.0/chosen.min.css">
+</head>
+<body>
+
+<div class="container" style="min-height: 200px;">
+    {{ message }}
+    <form action="." enctype="multipart/form-data" method="post" name="MainForm">{% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" class="btn btn-primary btn-save" value="save"/>
+        <a class="btn btn-default btn-back"href="{% url 'xdoc:permissions' node.pk %}">back</a>
+    </form>
+</div>
+
+<script src="{{ STATIC_URL }}xdoc/lib/jquery-1.10.2.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/bootstrap/js/bootstrap.min.js"></script>
+<script src="{{ STATIC_URL }}xdoc/lib/chosen_v1.0.0/chosen.jquery.min.js"></script>
+<script>
+    $("#id_permissions").chosen();
+</script>
+</body>
+</html>
