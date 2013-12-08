@@ -1,6 +1,6 @@
-var browser = angular.module('browser', []).
+var browser = angular.module('BrowserApp', ['ngRoute']).
     config(function($routeProvider) {
-        $routeProvider.
+       $routeProvider.
             when('/', {controller: ListCtrl, templateUrl: '/static/xdoc/browser.html'}).
             when('/add/:addNodeName', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
             when('/edit/:nodeId', {controller: EditCtrl, templateUrl: '/static/xdoc/edit.html'}).
