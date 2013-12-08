@@ -31,9 +31,11 @@ browser.run(function ($rootScope) {
 function ListCtrl($scope, $http, $rootScope, BrowserService) {
     "use strict";
 
+    $scope.loading = false;
     $scope.config = BrowserService.getConfig();
 
     $scope.loadNode = function() {
+        $scope.loading = false;
         var config = {params: {
             parent_node: $rootScope.parent_node,
             start: $rootScope.start,
@@ -47,6 +49,7 @@ function ListCtrl($scope, $http, $rootScope, BrowserService) {
             $scope.paginate = data.paginate;
             $scope.path = data.path;
             $scope.nodes = data.results;
+            $scope.loading = true;
         });
     };
 
