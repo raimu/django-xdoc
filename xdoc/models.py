@@ -48,6 +48,9 @@ class Node(models.Model):
     def get_fileobject(self):
         return import_class(self._get_settings('node')).objects.get(pk=self.pk)
 
+    def get_nodeobject(self):
+        return Node.objects.get(pk=self.pk)
+
     @staticmethod
     def create_new_fileobject(name):
         return import_class(settings.XDOC_NODE_MAP[name]['node'])()
