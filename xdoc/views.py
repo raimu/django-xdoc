@@ -36,6 +36,8 @@ def edit(request, pk, node_name=None):
             message.append('save successful')
             form.save()
             assign_perm('view_node', request.user, node.get_nodeobject())
+            if pk == 'add':
+                return redirect('xdoc:edit', node.pk)
 
     c = {'form': form, 'request': request, 'message': message, 'node': node}
     c.update(csrf(request))

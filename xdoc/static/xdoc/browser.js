@@ -12,12 +12,6 @@ var browser = angular.module('BrowserApp', ['ngRoute']).
 
 browser.factory('BrowserService', function($http) {
     return {
-        getConfig: function() {
-            return $http.get('/xdoc/api/config')
-                .then(function(result) {
-                    return result.data;
-                });
-        },
         insert_iframe: function(url) {
             var element = $('<iframe src="' + url +'"' +
                 'style="width: 100%; border: none;" />');
@@ -56,7 +50,6 @@ function ListCtrl($scope, $http, $rootScope, BrowserService) {
     "use strict";
 
     $scope.loading = false;
-    $scope.config = BrowserService.getConfig();
 
     $scope.loadNode = function() {
         $scope.loading = false;
@@ -74,6 +67,12 @@ function ListCtrl($scope, $http, $rootScope, BrowserService) {
             $scope.path = data.path;
             $scope.nodes = data.results;
             $scope.loading = true;
+        });
+    };
+
+    $scope.loadConfig = function() {
+        $http.get('/xdoc/api/config').success(function(data) {
+            $scope.config = data;
         });
     };
 
@@ -122,6 +121,7 @@ function ListCtrl($scope, $http, $rootScope, BrowserService) {
 
     $scope.init = function() {
         $scope.loadNode();
+        $scope.loadConfig();
     };
 
     $scope.init();
