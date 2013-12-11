@@ -9,7 +9,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import View
 from guardian.forms import UserObjectPermissionsForm, GroupObjectPermissionsForm
 from guardian.mixins import LoginRequiredMixin
-from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms
+from guardian.shortcuts import get_perms, get_users_with_perms, get_groups_with_perms, get_objects_for_user, assign_perm
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from xdoc.models import Node
@@ -35,6 +35,7 @@ def edit(request, pk, node_name=None):
         if form.is_valid():
             message.append('save successful')
             form.save()
+            assign_perm('view_node', request.user, node.get_nodeobject())
 
     c = {'form': form, 'request': request, 'message': message, 'node': node}
     c.update(csrf(request))
@@ -59,7 +60,7 @@ class NodeList(APIView):
 
     def get(self, request, format=None):
         self.request = request
-        nodes = Node.objects.all()
+        nodes = get_objects_for_user(request.user, 'xdoc.view_node')
         result = {
             'parent_node': int(self.get_param('parent_node', default=0)),
             'start': int(self.get_param('start', default=0)),
