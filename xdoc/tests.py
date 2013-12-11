@@ -73,9 +73,12 @@ class ViewTestWithoutLogin(TestCase):
 class ViewTests(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user(username='test', password='secret')
+        self.user = User.objects.create_superuser(username='test',
+                                                  email='foo@bar',
+                                                  password='secret')
         self.client.login(username='test', password='secret')
         self.node = Node.objects.create(name='foo')
+        assign_perm('view_node', self.user, self.node)
 
     def test_main(self):
         response = self.client.get(reverse('xdoc:main'))
@@ -103,8 +106,8 @@ class ViewTests(TestCase):
         response = self.client.post(
             reverse('xdoc:add', kwargs={'pk': 'add', 'node_name': 'Node'}),
             data={'name': 'bar.txt'})
-        self.assertIn('save successful', response.content)
         self.assertEqual(2, Node.objects.all().count())  # insert row
+        self.assertRedirects(response, 'xdoc/edit/2/')
 
     def test_node_detail(self):
         response = self.client.get(
