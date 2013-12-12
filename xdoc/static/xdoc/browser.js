@@ -16,7 +16,7 @@ browser.factory('BrowserService', function($http) {
             var element = $('<iframe src="' + url +'"' +
                 'style="width: 100%; border: none;" />');
             var adjustIframeHeight = function(iframe) {
-                iframe.height(iframe.contents().find('html').height() + 30);
+                iframe.height(iframe.contents().find('body').height() + 30);
             };
             $(element).load(function(){
                 var iframe = $('iframe');
